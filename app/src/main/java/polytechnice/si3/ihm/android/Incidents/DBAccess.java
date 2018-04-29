@@ -14,7 +14,7 @@ import java.util.List;
 
 import polytechnice.si3.ihm.android.User;
 
-public class IncidentDBAccess extends SQLiteOpenHelper {
+public class DBAccess extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 4;
 
@@ -138,7 +138,7 @@ public class IncidentDBAccess extends SQLiteOpenHelper {
         IncidentTable.insertBaseValues(db);
     }
 
-    public IncidentDBAccess(Context context) {
+    public DBAccess(Context context) {
         super(context, DB_NAME, null, DATABASE_VERSION);
         this.myContext = context;
     }

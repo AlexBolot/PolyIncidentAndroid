@@ -42,7 +42,7 @@ public class IncidentGridFragment extends Fragment {
         if (getArguments() == null)
             throw new IllegalArgumentException("You must set the progress to display");
 
-        IncidentDBAccess db = new IncidentDBAccess(getContext());
+        DBAccess db = new DBAccess(getContext());
 
         List<Incident> incidents;
 
