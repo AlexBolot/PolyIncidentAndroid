@@ -13,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import polytechnice.si3.ihm.android.Incidents.IncidentGridFragment;
+import polytechnice.si3.ihm.android.database.model.User;
+import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -33,6 +35,16 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
+        UserViewModel uvm = new UserViewModel(getApplication());
+
+        uvm.deleteAll();
+
+        uvm.getUsers().observe(this, users -> {
+            if (users != null) users.forEach(user -> Log.i("TAG", "\n" + user.toString()));
+        });
+
+        uvm.insert(new User(true, "bolot"), new User(true, "bolot"));
     }
 
     @Override
