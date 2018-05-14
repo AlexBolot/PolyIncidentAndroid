@@ -13,4 +13,7 @@
     <string name="_10sec">10sec</string>
     <string name="_5sec">5sec</string>
     <string name="load_image">Load Image</string>
+    <string name="first_button">Nouvel incident</string>
+    <string name="second_button">Chercher incident</string>
+    <string name="third_button">Profil</string>
 </resources>

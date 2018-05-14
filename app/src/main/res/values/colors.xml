@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="white">#ffffff</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
@@ -9,4 +10,7 @@
     <color name="cardview_light_background">#FFFFFFFF</color>
     <color name="cardview_text">#000</color>
     <color name="cardview_backgroung_meta">#0553d9</color>
+    <color name="blue">#056bd9</color>
+    <color name="blue_pressed">#058bd9</color>
+    <color name="half_blue">#057dd9</color>
 </resources>
