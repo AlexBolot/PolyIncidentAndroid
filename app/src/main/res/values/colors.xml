@@ -13,4 +13,5 @@
     <color name="blue">#056bd9</color>
     <color name="blue_pressed">#058bd9</color>
     <color name="half_blue">#057dd9</color>
+    <color name="blue_label">#05a4d9</color>
 </resources>
