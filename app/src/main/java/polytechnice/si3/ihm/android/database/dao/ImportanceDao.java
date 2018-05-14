@@ -8,7 +8,6 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import polytechnice.si3.ihm.android.database.model.Category;
 import polytechnice.si3.ihm.android.database.model.Importance;
 
 @Dao
@@ -23,11 +22,11 @@ public interface ImportanceDao {
     LiveData<Importance> getByLabel(String label);
 
     @Insert
-    void insert(Category... categories);
+    void insert(Importance... importances);
 
     @Delete
-    void delete(Category... categories);
+    void delete(Importance... importances);
 
-    @Query("DELETE FROM category")
+    @Query("DELETE FROM importance")
     void deleteAll();
 }

@@ -32,7 +32,7 @@ public abstract class GlobalDB extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (GlobalDB.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = databaseBuilder(context, GlobalDB.class, "GlobalDB").fallbackToDestructiveMigration().build();
+                    INSTANCE = databaseBuilder(context, GlobalDB.class, "GlobalDB").build();
                 }
             }
         }
