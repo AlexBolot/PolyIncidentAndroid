@@ -15,15 +15,16 @@ import android.widget.TextView;
 import java.util.List;
 
 import polytechnice.si3.ihm.android.R;
+import polytechnice.si3.ihm.android.database.model.Issue;
 
-public class IncidentAdapter extends ArrayAdapter<Incident> {
-    private List<Incident> incidents;
+public class IssueAdapter extends ArrayAdapter<Issue> {
+    private List<Issue> issues;
     private Context context;
 
-    public IncidentAdapter(@NonNull Context context, @NonNull List<Incident> incidents) {
-        super(context, 0, incidents);
-        Log.d("IncidentAdapter", "Create incident adapter with " + incidents.toString());
-        this.incidents = incidents;
+    public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues) {
+        super(context, 0, issues);
+        Log.d("IncidentAdapter", "Create incident adapter with " + issues.toString());
+        this.issues = issues;
         this.context = context;
     }
 
@@ -38,31 +39,31 @@ public class IncidentAdapter extends ArrayAdapter<Incident> {
     }
 
     private void setUpView(View view, int indexOfInc) {
-        Incident incident = this.getItem(indexOfInc);
-        if (incident == null) return;
+        Issue issue = this.getItem(indexOfInc);
+        if (issue == null) return;
         TextView meta = view.findViewById(R.id.inc_categorie);
-        StringBuilder metas = new StringBuilder(incident.getCategoryLabel());
+        StringBuilder metas = new StringBuilder(issue.getCategoryID());
         meta.append(" ");
-        metas.append(incident.getDate().toString());
+        metas.append(issue.getDate());
         meta.setText(metas);
 
         TextView title = view.findViewById(R.id.inc_title);
-        title.setText(incident.getTitle());
+        title.setText(issue.getTitle());
 
         TextView description = view.findViewById(R.id.inc_description);
-        description.setText(incident.getDescription());
+        description.setText(issue.getDescription());
 
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
 
         if (imageView.getDrawable() == null)
             imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.placeholder));
 
-        if (incident.getLinkToPreview() != null)
-            new ThumbnailLoader(imageView).execute(incident.getLinkToPreview());
+        if (issue.getLinkToPreview() != null)
+            new ThumbnailLoader(imageView).execute(issue.getLinkToPreview());
     }
 
     @Override
-    public Incident getItem(int index) {
-        return incidents.get(index);
+    public Issue getItem(int index) {
+        return issues.get(index);
     }
 }

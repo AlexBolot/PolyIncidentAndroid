@@ -2,8 +2,10 @@ package polytechnice.si3.ihm.android.database.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import polytechnice.si3.ihm.android.database.GlobalDB;
@@ -28,6 +30,15 @@ public class IssueRepository {
         return issues;
     }
 
+    public LiveData<List<Issue>> getByProgress(int progressID) {
+
+        MediatorLiveData<List<Issue>> result = new MediatorLiveData<>();
+
+        new getByProgressAsyncTask(result).execute(progressID);
+
+        return result;
+    }
+
     public void insert(Issue... issues) {
         new insertAsyncTask().execute(issues);
     }
@@ -44,25 +55,50 @@ public class IssueRepository {
     //-------------------- AsyncTasks --------------------//
     //----------------------------------------------------//
 
+    private static class getByProgressAsyncTask extends AsyncTask<Integer, Void, LiveData<List<Issue>>> {
+
+        private MediatorLiveData<List<Issue>> issues;
+
+        getByProgressAsyncTask(MediatorLiveData<List<Issue>> issues) {
+            this.issues = issues;
+            this.issues.setValue(new ArrayList<>());
+        }
+
+        @Override
+        protected LiveData<List<Issue>> doInBackground(Integer... integers) {
+            return issueDao.getByProgress(integers[0]);
+        }
+
+        @Override
+        protected void onPostExecute(LiveData<List<Issue>> issues) {
+            issues.observeForever(issueList -> {
+                if(this.issues.getValue() == null || issueList == null) return;
+
+                this.issues.getValue().clear();
+                this.issues.getValue().addAll(issueList);
+            });
+        }
+    }
+
     private static class insertAsyncTask extends AsyncTask<Issue, Void, Void> {
         @Override
-        protected Void doInBackground(final Issue... users) {
-            issueDao.insert(users);
+        protected Void doInBackground(final Issue... issues) {
+            issueDao.insert(issues);
             return null;
         }
     }
 
     private static class deleteAsyncTask extends AsyncTask<Issue, Void, Void> {
         @Override
-        protected Void doInBackground(Issue... users) {
-            issueDao.delete(users);
+        protected Void doInBackground(Issue... issues) {
+            issueDao.delete(issues);
             return null;
         }
     }
 
     private static class deleteAllAsyncTask extends AsyncTask<Issue, Void, Void> {
         @Override
-        protected Void doInBackground(Issue... users) {
+        protected Void doInBackground(Issue... issues) {
             issueDao.deleteAll();
             return null;
         }

@@ -6,7 +6,6 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import polytechnice.si3.ihm.android.database.model.Issue;
 import polytechnice.si3.ihm.android.database.repository.IssueRepository;
@@ -38,7 +37,7 @@ public class IssueViewModel extends AndroidViewModel {
         issueRepository.deleteAll();
     }
 
-    public List<Issue> getAll(int progressID) {
-        return getAll().getValue().stream().filter(issue -> issue.getProgressID() == progressID).collect(Collectors.toList());
+    public LiveData<List<Issue>> getByProgress(int progressID) {
+        return issueRepository.getByProgress(progressID);
     }
 }

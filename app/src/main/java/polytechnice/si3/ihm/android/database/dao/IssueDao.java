@@ -21,6 +21,9 @@ public interface IssueDao {
     @Query("SELECT * FROM issue WHERE creatorID LIKE :userID")
     LiveData<Issue> getByCreatorUser(int userID);
 
+    @Query("SELECT * FROM issue WHERE progressID LIKE :progressID")
+    LiveData<List<Issue>> getByProgress(int progressID);
+
     @Insert
     void insert(Issue... issues);
 
