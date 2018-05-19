@@ -16,4 +16,5 @@
     <string name="first_button">Nouvel incident</string>
     <string name="second_button">Chercher incident</string>
     <string name="third_button">Profil</string>
+    <string name="showMore">Afficher plus</string>
 </resources>

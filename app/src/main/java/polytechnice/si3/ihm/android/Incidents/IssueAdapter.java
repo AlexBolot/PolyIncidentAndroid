@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.database.model.Issue;
 
 public class IssueAdapter extends ArrayAdapter<Issue> {
+    private final static String TAG = "IssueAdapter";
     private List<Issue> issues;
     private Context context;
 
@@ -50,16 +52,57 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         TextView title = view.findViewById(R.id.inc_title);
         title.setText(issue.getTitle());
 
+
         TextView description = view.findViewById(R.id.inc_description);
-        description.setText(issue.getDescription());
+
+        //Shorten description and display the "show more"
+        int maxLength = 100;
+        if (issue.getDescription().length() > maxLength) {
+            int i = maxLength;
+            while (issue.getDescription().charAt(i) != ' '
+                    && issue.getDescription().charAt(i) != '\n'
+                    && issue.getDescription().charAt(i) != '\t')
+                ++i;
+            StringBuilder desc =
+                    new StringBuilder(issue.getDescription().substring(0, i)).append(" ...");
+            description.setText(desc);
+        } else {
+            description.setText(issue.getDescription());
+            ImageView showMoreImg = (ImageView) view.findViewById(R.id.showMoreImg);
+            showMoreImg.setVisibility(View.INVISIBLE);
+        }
+
 
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
-
-        if (imageView.getDrawable() == null)
-            imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.placeholder));
+        VideoView videoPreview = (VideoView) view.findViewById(R.id.videoPreview);
 
         if (issue.getLinkToPreview() != null)
-            new ThumbnailLoader(imageView).execute(issue.getLinkToPreview());
+            if (isImg(issue.getLinkToPreview())) {
+                //If this is an image to preview
+                videoPreview.setVisibility(View.INVISIBLE);
+                if (imageView.getDrawable() == null)
+                    imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.placeholder));
+                new ThumbnailLoader(imageView).execute(issue.getLinkToPreview());
+            } else {
+                //If the link point a video, we load a video component
+                Log.d(TAG + "_loadVideo", "Video : " + issue.getLinkToPreview());
+                imageView.setVisibility(View.INVISIBLE);
+                videoPreview.setVideoPath(issue.getLinkToPreview());
+                videoPreview.start();
+                videoPreview.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (videoPreview.isPlaying())
+                            videoPreview.pause();
+                        else
+                            videoPreview.start();
+                    }
+                });
+            }
+    }
+
+    private boolean isImg(String linkToPreview) {
+        return !(linkToPreview.startsWith("https://youtu.be") || linkToPreview.endsWith(".mp4"));
     }
 
     @Override

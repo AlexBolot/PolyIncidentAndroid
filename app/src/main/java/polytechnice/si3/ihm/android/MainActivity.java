@@ -84,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
                                 1, 3, 2),
                         new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
                                 "On me suit", "Je me sens épié depuis quelques temps",
-                                "https://i.imgur.com/kSQAhKl.png", new Date().toString(),
+                                "http://dw.convertfiles.com/files/0960897001526757786/015%20%20%20%20les%20exploits%20ii.mp4",
+                                new Date().toString(),
                                 1, 2, 2)
                 );
             }
