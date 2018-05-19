@@ -33,6 +33,65 @@ import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 public class MainActivity extends AppCompatActivity {
 
     private static String TAG = "MainActivity";
+    private static boolean mustInitDB = false;
+
+    //region Database
+    private void setupDB(UserViewModel userViewModel, IssueViewModel issueViewModel,
+                         CategoryViewModel categoryViewModel, ImportanceViewModel importanceViewModel,
+                         ProgressViewModel progressViewModel) {
+        //region ========== Deletions =======
+        issueViewModel.deleteAll();
+        userViewModel.deleteAll();
+        importanceViewModel.deleteAll();
+        categoryViewModel.deleteAll();
+        progressViewModel.deleteAll();
+
+        userViewModel.insert(
+                new User(false, "User1"),
+                new User(false, "User2"),
+                new User(true, "Admin1")
+        );
+
+        categoryViewModel.insert(
+                new Category(1, "Pertes"),
+                new Category(2, "Dégâts"),
+                new Category(3, "Inquiétude"));
+
+        importanceViewModel.insert(
+                new Importance(1, "Faible"),
+                new Importance(2, "Moyenne"),
+                new Importance(3, "Forte"));
+
+        progressViewModel.insert(
+                new Progress(1, "TODO"),
+                new Progress(2, "DOING"),
+                new Progress(3, "DONE"));
+
+
+        //Get all users
+        userViewModel.getAll().observeForever(userList -> {
+            if (userList != null && !userList.isEmpty()) {
+                Log.i(TAG + "_initDB", userList.toString());
+
+                issueViewModel.insert(
+                        new Issue(userList.get(0).getId(), userList.get(1).getId(),
+                                "Je veux un raton laveur", "Il est trop mignon",
+                                "https://i.imgur.com/VVWVgxp.png", new Date().toString(),
+                                1, 1, 2),
+                        new Issue(userList.get(1).getId(), userList.get(2).getId(),
+                                "Vase cassé", "Je balance pas, mais le vase est cassé",
+                                "https://i.imgur.com/URVyanB.png", new Date().toString(),
+                                1, 3, 2),
+                        new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
+                                "On me suit", "Je me sens épié depuis quelques temps",
+                                "https://i.imgur.com/kSQAhKl.png", new Date().toString(),
+                                1, 2, 2)
+                );
+            }
+        });
+    }
+
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,59 +112,36 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        //region ========== Models ==========
         UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         IssueViewModel issueViewModel = ViewModelProviders.of(this).get(IssueViewModel.class);
         CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         ImportanceViewModel importanceViewModel = ViewModelProviders.of(this).get(ImportanceViewModel.class);
         ProgressViewModel progressViewModel = ViewModelProviders.of(this).get(ProgressViewModel.class);
 
-        userViewModel.insert(
-                new User(false, "User1"),
-                new User(false, "User2"),
-                new User(true, "Admin1")
-        );
+        //endregion
 
-        categoryViewModel.insert(
-                new Category("Pertes"),
-                new Category("Dégâts"),
-                new Category("Inquiétude"));
-
-        importanceViewModel.insert(
-                new Importance("Faible"),
-                new Importance("Moyenne"),
-                new Importance("Forte"));
-
-        progressViewModel.insert(
-                new Progress("TODO"),
-                new Progress("DOING"),
-                new Progress("DONE"));
-
-        userViewModel.getAll().observeForever(userList -> {
-            if (userList != null && !userList.isEmpty()) {
-                Log.i(TAG, userList.toString());
-
-                issueViewModel.insert(
-                        new Issue(userList.get(0).getId(), userList.get(1).getId(),
-                                "Je veux un raton laveur", "Il est trop mignon",
-                                "https://i.imgur.com/VVWVgxp.png", new Date().toString(),
-                                1, 1, 2),
-                        new Issue(userList.get(1).getId(), userList.get(2).getId(),
-                                "Vase cassé", "Je balance pas, mais le vase est cassé",
-                                "https://i.imgur.com/URVyanB.png", new Date().toString(),
-                                1, 3, 2),
-                        new Issue(userList.get(2).getId(), userList.get(0).getId(),
-                                "On me suit", "Je me sens épié depuis quelques temps",
-                                "https://i.imgur.com/kSQAhKl.png", new Date().toString(),
-                                1, 2, 2)
-                );
-            }
-        });
-
+        //region ========== Printing ========
         userViewModel.getAll().observeForever(this::print);
         issueViewModel.getAll().observeForever(this::print);
         categoryViewModel.getAll().observeForever(this::print);
         importanceViewModel.getAll().observeForever(this::print);
         progressViewModel.getAll().observeForever(this::print);
+
+        //endregion
+
+
+        if (mustInitDB)
+            setupDB(userViewModel, issueViewModel, categoryViewModel, importanceViewModel, progressViewModel);
+
+        //region ========== Printing ========
+        userViewModel.getAll().observeForever(this::print);
+        issueViewModel.getAll().observeForever(this::print);
+        categoryViewModel.getAll().observeForever(this::print);
+        importanceViewModel.getAll().observeForever(this::print);
+        progressViewModel.getAll().observeForever(this::print);
+
+        //endregion
     }
 
     private void print(List list) {
