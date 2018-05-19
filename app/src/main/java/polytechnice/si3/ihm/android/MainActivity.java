@@ -13,11 +13,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Date;
 import java.util.List;
 
 import polytechnice.si3.ihm.android.Incidents.DoingFragment;
 import polytechnice.si3.ihm.android.Incidents.DoneFragment;
 import polytechnice.si3.ihm.android.Incidents.TodoFragment;
+import polytechnice.si3.ihm.android.database.model.Category;
+import polytechnice.si3.ihm.android.database.model.Importance;
+import polytechnice.si3.ihm.android.database.model.Issue;
+import polytechnice.si3.ihm.android.database.model.Progress;
+import polytechnice.si3.ihm.android.database.model.User;
 import polytechnice.si3.ihm.android.database.viewmodel.CategoryViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.ImportanceViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
@@ -25,6 +31,9 @@ import polytechnice.si3.ihm.android.database.viewmodel.ProgressViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +59,13 @@ public class MainActivity extends AppCompatActivity {
         ImportanceViewModel importanceViewModel = ViewModelProviders.of(this).get(ImportanceViewModel.class);
         ProgressViewModel progressViewModel = ViewModelProviders.of(this).get(ProgressViewModel.class);
 
-        /*categoryViewModel.insert(
+        userViewModel.insert(
+                new User(false, "User1"),
+                new User(false, "User2"),
+                new User(true, "Admin1")
+        );
+
+        categoryViewModel.insert(
                 new Category("Pertes"),
                 new Category("Dégâts"),
                 new Category("Inquiétude"));
@@ -63,18 +78,28 @@ public class MainActivity extends AppCompatActivity {
         progressViewModel.insert(
                 new Progress("TODO"),
                 new Progress("DOING"),
-                new Progress("DONE"));*/
+                new Progress("DONE"));
 
-       /* userViewModel.getAll().observeForever(userList -> {
+        userViewModel.getAll().observeForever(userList -> {
             if (userList != null && !userList.isEmpty()) {
-                Log.i("TAG", userList.toString());
+                Log.i(TAG, userList.toString());
 
                 issueViewModel.insert(
-                        new Issue(userList.get(0).getId(), userList.get(1).getId(), "Je veux un raton laveur", "Il est trop mignon", "https://i.imgur.com/VVWVgxp.png", new Date().toString(), 1, 1, 2),
-                        new Issue(userList.get(1).getId(), userList.get(2).getId(), "Vase cassé", "Je balance pas, mais le vase est cassé", "https://i.imgur.com/URVyanB.png", new Date().toString(), 1, 3, 2),
-                        new Issue(userList.get(2).getId(), userList.get(0).getId(), "On me suit", "Je me sens épié depuis quelques temps", "https://i.imgur.com/kSQAhKl.png", new Date().toString(), 1, 2, 2));
+                        new Issue(userList.get(0).getId(), userList.get(1).getId(),
+                                "Je veux un raton laveur", "Il est trop mignon",
+                                "https://i.imgur.com/VVWVgxp.png", new Date().toString(),
+                                1, 1, 2),
+                        new Issue(userList.get(1).getId(), userList.get(2).getId(),
+                                "Vase cassé", "Je balance pas, mais le vase est cassé",
+                                "https://i.imgur.com/URVyanB.png", new Date().toString(),
+                                1, 3, 2),
+                        new Issue(userList.get(2).getId(), userList.get(0).getId(),
+                                "On me suit", "Je me sens épié depuis quelques temps",
+                                "https://i.imgur.com/kSQAhKl.png", new Date().toString(),
+                                1, 2, 2)
+                );
             }
-        });*/
+        });
 
         userViewModel.getAll().observeForever(this::print);
         issueViewModel.getAll().observeForever(this::print);
@@ -84,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void print(List list) {
-        if (list != null && !list.isEmpty()) Log.i("TAG", list.toString());
+        if (list != null && !list.isEmpty()) Log.i(TAG, list.toString());
     }
 
     @Override
