@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -87,17 +88,25 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 //If the link point a video, we load a video component
                 Log.d(TAG + "_loadVideo", "Video : " + issue.getLinkToPreview());
                 imageView.setVisibility(View.INVISIBLE);
+                ImageView placeholder = view.findViewById(R.id.loadingVideo);
+
+//                placeholder.setVisibility(View.VISIBLE);
+                placeholder.setVisibility(View.VISIBLE);
+
+                MediaController mediaController = new MediaController(this.getContext());
+                mediaController.setEnabled(true);
+                videoPreview.setMediaController(mediaController);
+
+
                 videoPreview.setVideoPath(issue.getLinkToPreview());
-                videoPreview.start();
-                videoPreview.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (videoPreview.isPlaying())
-                            videoPreview.pause();
-                        else
-                            videoPreview.start();
-                    }
+                videoPreview.requestFocus();
+                //we set an setOnPreparedListener in order to know when the video file is ready for playback
+                videoPreview.setOnPreparedListener(mediaPlayer -> {
+                    // hide the place holder
+                    placeholder.setVisibility(View.INVISIBLE);
+                    videoPreview.start();
                 });
+
             }
     }
 
