@@ -22,7 +22,7 @@ import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
 @SuppressWarnings("ConstantConditions")
 public class TodoFragment extends Fragment {
 
-    private static final String PROGRESS_TO_DISPLAY = "progress";
+    private static final String PROGRESS_TO_DISPLAY = "todo";
 
     /**
      * Returns a new instance of this fragment for the given section
