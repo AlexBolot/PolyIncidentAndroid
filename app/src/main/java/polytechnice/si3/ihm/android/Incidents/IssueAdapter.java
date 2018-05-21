@@ -78,7 +78,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
 
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
-        SinglePlayVideoView videoPreview = (SinglePlayVideoView) view.findViewById(R.id.videoPreview);
+        SinglePlayVideoView videoPreview = view.findViewById(R.id.videoPreview);
 
         if (issue.getLinkToPreview() != null) {
             if (isImg(issue.getLinkToPreview())) {
@@ -100,7 +100,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 placeholder.setVisibility(View.VISIBLE);
 
                 //region ========== VideoView ==========
-                videoPreview.setMediaController(new MediaController(this.getContext()));
+                videoPreview.setMediaController(new MediaController(context));
                 videoPreview.setVideoPath(issue.getLinkToPreview());
                 videoPreview.requestFocus();
                 //we set an setOnPreparedListener in order to know when the video file is ready for playback
