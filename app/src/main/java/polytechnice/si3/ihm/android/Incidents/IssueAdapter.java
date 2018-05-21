@@ -1,5 +1,7 @@
 package polytechnice.si3.ihm.android.Incidents;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
@@ -100,8 +102,8 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 placeholder.setVisibility(View.VISIBLE);
 
                 //region ========== VideoView ==========
-                videoPreview.setMediaController(new MediaController(context));
                 videoPreview.setVideoPath(issue.getLinkToPreview());
+                videoPreview.setMediaController(new MediaController(context));
                 videoPreview.requestFocus();
                 //we set an setOnPreparedListener in order to know when the video file is ready for playback
 
@@ -112,12 +114,15 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                         if (playing != null && playing.isPlaying())
                             playing.pause();
                         playing = videoPreview;
+
+                        slideUp(title);
                     }
 
                     @Override
                     public void onPause() {
                         Log.d(TAG + "_videoPlayer", "plause");
                         playing = null;
+                        slideDown(title);
                     }
                 });
                 videoPreview.setOnPreparedListener(mediaPlayer -> {
@@ -141,4 +146,23 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         return issues.get(index);
     }
 
+    //do what slideUp jquery function does
+    private void slideUp(View view) {
+        view.animate().scaleY(0).translationY(-view.getHeight() / 2).setDuration(500).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
+    }
+
+    //do what slideDown jquery function does
+    private void slideDown(View view) {
+        view.animate().scaleY(1).translationY(0).setDuration(500).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
+    }
 }
