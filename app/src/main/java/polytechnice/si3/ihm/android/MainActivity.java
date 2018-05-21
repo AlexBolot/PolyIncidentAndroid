@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.MediaController;
 
 import java.util.Date;
 import java.util.List;
@@ -77,16 +78,21 @@ public class MainActivity extends AppCompatActivity {
                         new Issue(userList.get(0).getId(), userList.get(1).getId(),
                                 "Je veux un raton laveur", "Il est trop mignon",
                                 "https://i.imgur.com/VVWVgxp.png", new Date().toString(),
-                                1, 1, 2),
+                                1, 2, 2),
                         new Issue(userList.get(1).getId(), userList.get(2).getId(),
                                 "Vase cassé", "Je balance pas, mais le vase est cassé",
                                 "https://i.imgur.com/URVyanB.png", new Date().toString(),
                                 1, 3, 2),
                         new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
                                 "On me suit", "Je me sens épié depuis quelques temps",
-                                "http://dw.convertfiles.com/files/0960897001526757786/015%20%20%20%20les%20exploits%20ii.mp4",
+                                "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
                                 new Date().toString(),
-                                1, 2, 2)
+                                1, 1, 2),
+                        new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
+                                "On me suit", "J'ai faim.",
+                                "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
+                                new Date().toString(),
+                                1, 1, 2)
                 );
             }
         });
@@ -121,16 +127,6 @@ public class MainActivity extends AppCompatActivity {
         ProgressViewModel progressViewModel = ViewModelProviders.of(this).get(ProgressViewModel.class);
 
         //endregion
-
-        //region ========== Printing ========
-        userViewModel.getAll().observeForever(this::print);
-        issueViewModel.getAll().observeForever(this::print);
-        categoryViewModel.getAll().observeForever(this::print);
-        importanceViewModel.getAll().observeForever(this::print);
-        progressViewModel.getAll().observeForever(this::print);
-
-        //endregion
-
 
         if (mustInitDB)
             setupDB(userViewModel, issueViewModel, categoryViewModel, importanceViewModel, progressViewModel);

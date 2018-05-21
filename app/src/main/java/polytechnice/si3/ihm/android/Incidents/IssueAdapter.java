@@ -17,12 +17,15 @@ import android.widget.VideoView;
 import java.util.List;
 
 import polytechnice.si3.ihm.android.R;
+import polytechnice.si3.ihm.android.SinglePlayVideoView;
 import polytechnice.si3.ihm.android.database.model.Issue;
 
 public class IssueAdapter extends ArrayAdapter<Issue> {
     private final static String TAG = "IssueAdapter";
     private List<Issue> issues;
     private Context context;
+
+    private VideoView playing;
 
     public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues) {
         super(context, 0, issues);
@@ -75,39 +78,58 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
 
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
-        VideoView videoPreview = (VideoView) view.findViewById(R.id.videoPreview);
+        SinglePlayVideoView videoPreview = (SinglePlayVideoView) view.findViewById(R.id.videoPreview);
 
-        if (issue.getLinkToPreview() != null)
+        if (issue.getLinkToPreview() != null) {
             if (isImg(issue.getLinkToPreview())) {
+                //region ==== Image ====
                 //If this is an image to preview
                 videoPreview.setVisibility(View.INVISIBLE);
                 if (imageView.getDrawable() == null)
                     imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.placeholder));
                 new ThumbnailLoader(imageView).execute(issue.getLinkToPreview());
+                //endregion
             } else {
+                //region ==== Video ====
+
                 //If the link point a video, we load a video component
                 Log.d(TAG + "_loadVideo", "Video : " + issue.getLinkToPreview());
                 imageView.setVisibility(View.INVISIBLE);
-                ImageView placeholder = view.findViewById(R.id.loadingVideo);
 
-//                placeholder.setVisibility(View.VISIBLE);
+                ImageView placeholder = view.findViewById(R.id.loadingVideo);
                 placeholder.setVisibility(View.VISIBLE);
 
-                MediaController mediaController = new MediaController(this.getContext());
-                mediaController.setEnabled(true);
-                videoPreview.setMediaController(mediaController);
-
-
+                //region ========== VideoView ==========
+                videoPreview.setMediaController(new MediaController(this.getContext()));
                 videoPreview.setVideoPath(issue.getLinkToPreview());
                 videoPreview.requestFocus();
                 //we set an setOnPreparedListener in order to know when the video file is ready for playback
+
+                videoPreview.setPlayPauseListener(new SinglePlayVideoView.PlayPauseListener() {
+                    @Override
+                    public void onPlay() {
+                        Log.d(TAG + "_videoPlayer", "play");
+                        if (playing != null && playing.isPlaying())
+                            playing.pause();
+                        playing = videoPreview;
+                    }
+
+                    @Override
+                    public void onPause() {
+                        Log.d(TAG + "_videoPlayer", "plause");
+                        playing = null;
+                    }
+                });
                 videoPreview.setOnPreparedListener(mediaPlayer -> {
                     // hide the place holder
                     placeholder.setVisibility(View.INVISIBLE);
-                    videoPreview.start();
                 });
+                videoPreview.start();
 
+                //endregion
+                //endregion
             }
+        }
     }
 
     private boolean isImg(String linkToPreview) {
@@ -118,4 +140,5 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
     public Issue getItem(int index) {
         return issues.get(index);
     }
+
 }

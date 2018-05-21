@@ -23,12 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="200dp">
 
-            <VideoView
-                android:focusedByDefault="true"
+            <polytechnice.si3.ihm.android.SinglePlayVideoView
                 android:id="@+id/videoPreview"
                 android:layout_width="fill_parent"
-                android:keepScreenOn="true"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:focusedByDefault="true"
+                android:keepScreenOn="true" />
 
             <ImageView
                 android:id="@+id/loadingVideo"
