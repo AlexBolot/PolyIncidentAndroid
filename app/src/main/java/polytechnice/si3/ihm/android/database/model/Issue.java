@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.Intent;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -73,6 +74,21 @@ public class Issue {
         this.categoryID = categoryID;
         this.progressID = progressID;
         this.importanceID = importanceID;
+    }
+
+    public Issue(Intent intentProvidingData) {
+        if (intentProvidingData == null) return;
+        id = intentProvidingData.getIntExtra("id", -1);
+        assigneeID = intentProvidingData.getIntExtra("assigneeID", -1);
+        creatorID = intentProvidingData.getIntExtra("creatorID", -1);
+        title = intentProvidingData.getStringExtra("title");
+        description = intentProvidingData.getStringExtra("description");
+        linkToPreview = intentProvidingData.getStringExtra("linkToPreview");
+        date = intentProvidingData.getStringExtra("date");
+        categoryID = intentProvidingData.getIntExtra("categoryID", -1);
+        importanceID = intentProvidingData.getIntExtra("importanceID", -1);
+        progressID = intentProvidingData.getIntExtra("progressID", -1);
+
     }
 
     //region --------------- Getters and Setters ---------------
@@ -157,8 +173,21 @@ public class Issue {
         this.importanceID = importanceID;
     }
 
-
     //endregion
+
+    public void feedIntent(Intent intent) {
+        if (intent == null) return;
+        intent.putExtra("id", this.id);
+        intent.putExtra("assigneeID", this.assigneeID);
+        intent.putExtra("creatorID", this.creatorID);
+        intent.putExtra("title", this.title);
+        intent.putExtra("description", this.description);
+        intent.putExtra("linkToPreview", this.linkToPreview);
+        intent.putExtra("date", this.date);
+        intent.putExtra("categoryID", this.categoryID);
+        intent.putExtra("importanceID", this.importanceID);
+        intent.putExtra("progressID", this.progressID);
+    }
 
     @Override
     public String toString() {

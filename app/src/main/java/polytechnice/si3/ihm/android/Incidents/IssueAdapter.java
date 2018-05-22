@@ -3,6 +3,7 @@ package polytechnice.si3.ihm.android.Incidents;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -135,6 +136,17 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 //endregion
             }
         }
+
+        //region ========== View event handler ======
+
+        Intent intent = new Intent(this.getContext(), IssueDetailsView.class);
+        issue.feedIntent(intent);
+        view.findViewById(R.id.inc_description).setOnClickListener(
+                v -> view.getContext().startActivity(intent));
+        title.setOnClickListener(
+                v -> view.getContext().startActivity(intent));
+
+        //endregion
     }
 
     private boolean isImg(String linkToPreview) {
