@@ -104,25 +104,6 @@
                 android:textColor="#fff"
                 android:textSize="16sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:id="@+id/buttonDial"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@drawable/tel"
-                    android:textAlignment="textEnd" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
         <TextView

@@ -48,8 +48,12 @@ public class Issue {
     @ColumnInfo
     private int importanceID;
 
+    @ColumnInfo
+    private String phoneNumber;
+
     @Ignore
-    public Issue(int assigneeID, int creatorID, String title, String description, String linkToPreview, String date, int categoryID, int progressID, int importanceID) {
+    public Issue(int assigneeID, int creatorID, String title, String description, String linkToPreview,
+                 String date, int categoryID, int progressID, int importanceID, String phoneNumber) {
         this.id = 0;
         this.assigneeID = assigneeID;
         this.creatorID = creatorID;
@@ -60,10 +64,12 @@ public class Issue {
         this.categoryID = categoryID;
         this.progressID = progressID;
         this.importanceID = importanceID;
+        this.phoneNumber = phoneNumber;
     }
 
     @Deprecated
-    public Issue(int id, int assigneeID, int creatorID, String title, String description, String linkToPreview, String date, int categoryID, int progressID, int importanceID) {
+    public Issue(int id, int assigneeID, int creatorID, String title, String description, String linkToPreview,
+                 String date, int categoryID, int progressID, int importanceID, String phoneNumber) {
         this.id = id;
         this.assigneeID = assigneeID;
         this.creatorID = creatorID;
@@ -74,6 +80,7 @@ public class Issue {
         this.categoryID = categoryID;
         this.progressID = progressID;
         this.importanceID = importanceID;
+        this.phoneNumber = phoneNumber;
     }
 
     public Issue(Intent intentProvidingData) {
@@ -88,7 +95,7 @@ public class Issue {
         categoryID = intentProvidingData.getIntExtra("categoryID", -1);
         importanceID = intentProvidingData.getIntExtra("importanceID", -1);
         progressID = intentProvidingData.getIntExtra("progressID", -1);
-
+        phoneNumber = intentProvidingData.getStringExtra("phoneNumber");
     }
 
     //region --------------- Getters and Setters ---------------
@@ -173,6 +180,10 @@ public class Issue {
         this.importanceID = importanceID;
     }
 
+    public String getPhoneNumber() { return this.phoneNumber; }
+
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
     //endregion
 
     public void feedIntent(Intent intent) {
@@ -187,6 +198,7 @@ public class Issue {
         intent.putExtra("categoryID", this.categoryID);
         intent.putExtra("importanceID", this.importanceID);
         intent.putExtra("progressID", this.progressID);
+        intent.putExtra("phoneNumber", this.phoneNumber);
     }
 
     @Override
@@ -202,6 +214,7 @@ public class Issue {
                 ", categoryID=" + categoryID +
                 ", progressID=" + progressID +
                 ", importanceID=" + importanceID +
+                ", phoneNumber=" + phoneNumber +
                 '}';
     }
 }

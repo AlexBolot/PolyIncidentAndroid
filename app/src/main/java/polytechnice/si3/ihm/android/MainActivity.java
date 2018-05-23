@@ -1,6 +1,9 @@
 package polytechnice.si3.ihm.android;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.net.Uri;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -15,6 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import android.view.View;
+import android.widget.Button;
+import android.widget.MediaController;
 
 import java.util.Date;
 import java.util.List;
@@ -51,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
         progressViewModel.deleteAll();
 
         userViewModel.insert(
-                new User(false, "User1"),
-                new User(false, "User2"),
-                new User(true, "Admin1"));
+                new User(false, "User1", "0621236433"),
+                new User(false, "User2", "0621246433"),
+                new User(true, "Admin1", "0621256333"));
 
         categoryViewModel.insert(
                 new Category(1, "Pertes"),
@@ -80,21 +86,21 @@ public class MainActivity extends AppCompatActivity {
                         new Issue(userList.get(0).getId(), userList.get(1).getId(),
                                 "Je veux un raton laveur", "Il est trop mignon",
                                 "https://i.imgur.com/VVWVgxp.png", new Date().toString(),
-                                1, 2, 2),
+                                1, 2, 2, "621236433"),
                         new Issue(userList.get(1).getId(), userList.get(2).getId(),
                                 "Vase cassé", "Je balance pas, mais le vase est cassé",
                                 "https://i.imgur.com/URVyanB.png", new Date().toString(),
-                                1, 3, 2),
+                                1, 3, 2, "621236433"),
                         new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
                                 "On me suit", "Je me sens épié depuis quelques temps",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
                                 new Date().toString(),
-                                1, 1, 2),
+                                1, 1, 2, "621236433"),
                         new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
                                 "On me suit", "J'ai faim.",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
                                 new Date().toString(),
-                                1, 1, 2)
+                                1, 1, 2, "621236433")
                 );
             }
         });
