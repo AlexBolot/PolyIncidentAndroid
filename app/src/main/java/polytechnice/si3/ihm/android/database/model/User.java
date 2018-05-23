@@ -19,16 +19,20 @@ public class User {
     @ColumnInfo
     private String name;
 
+    @ColumnInfo
+    private String phoneNumber;
+
     @Ignore
-    public User(boolean admin, String name) {
-        this(0, admin, name);
+    public User(boolean admin, String name, String phoneNumber) {
+        this(0, admin, name, phoneNumber);
     }
 
     @Deprecated
-    public User(int id, boolean admin, String name) {
+    public User(int id, boolean admin, String name, String phoneNumber) {
         this.id = id;
         this.admin = admin;
         this.name = name;
+        this.phoneNumber = phoneNumber;
     }
 
     public int getId() {
@@ -55,6 +59,10 @@ public class User {
         this.name = name;
     }
 
+    public String getPhoneNumber() { return this.phoneNumber; }
+
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
     @Override
     public String toString() {
         return name;
@@ -67,11 +75,12 @@ public class User {
         User user = (User) o;
         return id == user.id &&
                 admin == user.admin &&
-                Objects.equals(name, user.name);
+                Objects.equals(name, user.name) &&
+                Objects.equals(phoneNumber, user.phoneNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, admin, name);
+        return Objects.hash(id, admin, name, phoneNumber);
     }
 }
