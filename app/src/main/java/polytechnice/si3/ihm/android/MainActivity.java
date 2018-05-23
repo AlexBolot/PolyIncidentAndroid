@@ -1,9 +1,6 @@
 package polytechnice.si3.ihm.android;
 
-import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.net.Uri;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -18,9 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import android.view.View;
-import android.widget.Button;
-import android.widget.MediaController;
 
 import java.util.Date;
 import java.util.List;
@@ -42,7 +36,7 @@ import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 public class MainActivity extends AppCompatActivity {
 
     private static String TAG = "MainActivity";
-    private static boolean mustInitDB = true;
+    private static boolean mustInitDB = false;
 
     //region Database
     private void setupDB(UserViewModel userViewModel, IssueViewModel issueViewModel,
@@ -67,14 +61,14 @@ public class MainActivity extends AppCompatActivity {
                 new Category("Inquiétude"));
 
         importanceViewModel.insert(
-                new Importance( "Faible"),
-                new Importance( "Moyenne"),
-                new Importance( "Forte"));
+                new Importance("Faible"),
+                new Importance("Moyenne"),
+                new Importance("Forte"));
 
         progressViewModel.insert(
-                new Progress( "TODO"),
-                new Progress( "DOING"),
-                new Progress( "DONE"));
+                new Progress("TODO"),
+                new Progress("DOING"),
+                new Progress("DONE"));
 
 
         //Get all users
@@ -119,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        ViewPager mViewPager = findViewById(R.id.container);
+        CustomViewPager mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
@@ -159,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         FloatingActionButton btnAdd = findViewById(R.id.float_add);
         btnAdd.setOnClickListener(view -> {
             Intent addView = new Intent(this, AddingActivity.class);
-            userViewModel.getLoggedIn().ifPresent(user -> addView.putExtra("LoggedIn",user.getId()));
+            userViewModel.getLoggedIn().ifPresent(user -> addView.putExtra("LoggedIn", user.getId()));
             startActivity(addView);
         });
     }

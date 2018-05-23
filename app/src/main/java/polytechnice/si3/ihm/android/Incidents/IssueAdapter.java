@@ -2,6 +2,7 @@ package polytechnice.si3.ihm.android.Incidents;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,8 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -22,6 +25,7 @@ import android.widget.VideoView;
 import java.io.InputStream;
 import java.util.List;
 
+import polytechnice.si3.ihm.android.CustomViewPager;
 import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.SinglePlayVideoView;
 import polytechnice.si3.ihm.android.SinglePlayVideoView.PlayPauseListener;
@@ -34,11 +38,20 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
     private VideoView playing;
 
-    public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues) {
+    private View swippedDesc;
+    private float xStart;
+
+    private float totalDx;
+
+    private CustomViewPager viewPager;
+
+
+    public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues, CustomViewPager viewPager) {
         super(context, 0, issues);
         Log.d("IncidentAdapter", "Create incident adapter with " + issues.toString());
         this.issues = issues;
         this.context = context;
+        this.viewPager = viewPager;
     }
 
     @NonNull
@@ -51,6 +64,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setUpView(View view, int indexOfInc) {
         Issue issue = this.getItem(indexOfInc);
         if (issue == null) return;
@@ -62,7 +76,6 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
         TextView title = view.findViewById(R.id.inc_title);
         title.setText(issue.getTitle());
-
 
         TextView description = view.findViewById(R.id.inc_description);
 
@@ -80,8 +93,85 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         } else {
             description.setText(issue.getDescription());
             ImageView showMoreImg = view.findViewById(R.id.showMoreImg);
-            showMoreImg.setVisibility(View.INVISIBLE);
+            showMoreImg.setVisibility(View.GONE);
         }
+
+        //region ===== Init the swiping action menu ====
+
+        //Listener for admin
+
+        View adminsButton = view.findViewById(R.id.adminButtonsLayout);
+
+        description.setOnTouchListener((v, event) -> {
+            if (event.getAction() != MotionEvent.ACTION_MOVE)
+                Log.d(TAG + "_test", event.toString());
+
+            if (v == null)
+                return false;
+
+            //if we up the touch, we determine if this is a clic or a swipe
+            if (event.getAction() == MotionEvent.ACTION_UP
+                    || event.getAction() == MotionEvent.ACTION_HOVER_EXIT
+                    || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                viewPager.setPagingEnabled(true);
+                if (totalDx < 50)
+                    swippedDesc.animate().x(0).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                Log.d(TAG + "_swipeMenu", "Swipe stopped");
+                if (Math.abs(event.getX() - xStart) < 10) {
+                    Log.d(TAG + "_swipeMenu", "Just clicked on desc");
+                    if (swippedDesc == v) {
+                        Log.d(TAG + "_swipeMenu", "Reset the swippedDesc");
+                        swippedDesc.animate().x(0).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                        return true;
+                    } else {
+                        //region ========== Clic handler ======
+                        Intent intent = new Intent(this.getContext(), IssueDetailsView.class);
+                        issue.feedIntent(intent);
+                        view.getContext().startActivity(intent);
+                        //endregion
+                    }
+                }
+                swippedDesc = null;
+                return false;
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                viewPager.setPagingEnabled(false);
+                if (swippedDesc != null && swippedDesc != v)
+                    swippedDesc.animate().x(0)
+                            .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                xStart = event.getX();
+                totalDx = 0;
+                Log.d(TAG + "_swipeMenu", "x start : " + xStart);
+                swippedDesc = v;
+            }
+            //if this is a move, we do the translation
+            else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                float dx = event.getX() - xStart;
+                Log.d(TAG + "_swipeMenu", "Moved, swipe ?");
+                totalDx += dx;
+                //if we go to right
+                if (dx > 3 && v.getX() + dx <= adminsButton.getWidth()) {
+                    if (totalDx < 50) {
+                        v.animate().x(v.getX() + dx).setDuration(0).start();
+                        Log.d(TAG + "_swipeMenu", "swipe done, dx = " + dx);
+                    } else if (totalDx > 0) {
+                        v.animate().x(adminsButton.getWidth())
+                                .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                    }
+                }
+                //if we go to left
+                else if (dx < -3 && v.getX() + dx >= 0) {
+                    if (v.getX() + dx >= 0 && totalDx < -20) {
+                        v.animate().x(v.getX() + dx).setDuration(0).start();
+                    } else {
+                        v.animate().x(0)
+                                .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                    }
+                }
+            }
+            return true;
+        });
+
+        //endregion
 
 
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
@@ -121,7 +211,8 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
                 //region ========== VideoView ==========
                 videoPreview.setVideoPath(link);
-                videoPreview.setMediaController(new MediaController(context));
+                MediaController mediaController = new MediaController(context);
+                videoPreview.setMediaController(mediaController);
                 videoPreview.requestFocus();
                 //we set an setOnPreparedListener in order to know when the video file is ready for playback
 
@@ -148,20 +239,16 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     placeholder.setVisibility(View.INVISIBLE);
                 });
                 videoPreview.start();
+                slideDown(title);
+
+                //Prevent media player from displaying when we don't want it to
+                viewPager.addMediaController(mediaController);
+
 
                 //endregion
                 //endregion
             }
         }
-
-        //region ========== View event handler ======
-
-        Intent intent = new Intent(this.getContext(), IssueDetailsView.class);
-        issue.feedIntent(intent);
-        view.findViewById(R.id.inc_description).setOnClickListener(v -> view.getContext().startActivity(intent));
-        title.setOnClickListener(v -> view.getContext().startActivity(intent));
-
-        //endregion
     }
 
     private boolean isImg(String linkToPreview) {

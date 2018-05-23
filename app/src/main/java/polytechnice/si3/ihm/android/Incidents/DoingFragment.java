@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import polytechnice.si3.ihm.android.CustomViewPager;
 import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.database.model.Issue;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
@@ -54,9 +55,10 @@ public class DoingFragment extends Fragment {
         if (getArguments() == null)
             throw new IllegalArgumentException("You must set the progress to display");
 
+        CustomViewPager viewPager = getActivity().findViewById(R.id.container);
         GridView gridView = getActivity().findViewById(R.id.doing_gridView);
         IssueViewModel ivm = ViewModelProviders.of(this).get(IssueViewModel.class);
-        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>());
+        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>(), viewPager);
 
         int progress = getArguments().getInt(PROGRESS_TO_DISPLAY);
         LiveData<List<Issue>> liveIssues = ivm.getAll();
