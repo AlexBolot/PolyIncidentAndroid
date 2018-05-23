@@ -36,7 +36,7 @@ import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 public class MainActivity extends AppCompatActivity {
 
     private static String TAG = "MainActivity";
-    private static boolean mustInitDB = false;
+    private static boolean mustInitDB = true;
 
     //region Database
     private void setupDB(UserViewModel userViewModel, IssueViewModel issueViewModel,
@@ -56,19 +56,19 @@ public class MainActivity extends AppCompatActivity {
                 new User(true, "Admin1"));
 
         categoryViewModel.insert(
-                new Category(1, "Pertes"),
-                new Category(2, "Dégâts"),
-                new Category(3, "Inquiétude"));
+                new Category("Pertes"),
+                new Category("Dégâts"),
+                new Category("Inquiétude"));
 
         importanceViewModel.insert(
-                new Importance(1, "Faible"),
-                new Importance(2, "Moyenne"),
-                new Importance(3, "Forte"));
+                new Importance( "Faible"),
+                new Importance( "Moyenne"),
+                new Importance( "Forte"));
 
         progressViewModel.insert(
-                new Progress(1, "TODO"),
-                new Progress(2, "DOING"),
-                new Progress(3, "DONE"));
+                new Progress( "TODO"),
+                new Progress( "DOING"),
+                new Progress( "DONE"));
 
 
         //Get all users

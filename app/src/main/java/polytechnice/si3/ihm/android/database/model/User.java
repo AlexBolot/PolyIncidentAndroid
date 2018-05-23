@@ -21,8 +21,7 @@ public class User {
 
     @Ignore
     public User(boolean admin, String name) {
-        this.admin = admin;
-        this.name = name;
+        this(0, admin, name);
     }
 
     @Deprecated
