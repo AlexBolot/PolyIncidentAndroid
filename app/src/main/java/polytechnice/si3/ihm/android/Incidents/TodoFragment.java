@@ -1,11 +1,14 @@
 package polytechnice.si3.ihm.android.Incidents;
 
+import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,8 @@ import java.util.stream.Collectors;
 import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.database.model.Issue;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
+
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 @SuppressWarnings("ConstantConditions")
 public class TodoFragment extends Fragment {
@@ -49,21 +54,40 @@ public class TodoFragment extends Fragment {
             throw new IllegalArgumentException("You must set the progress to display");
 
         GridView gridView = getActivity().findViewById(R.id.todo_gridView);
-
-        int display = getArguments().getInt(PROGRESS_TO_DISPLAY);
-
         IssueViewModel ivm = ViewModelProviders.of(this).get(IssueViewModel.class);
-
-        LiveData<List<Issue>> liveIssues = ivm.getAll();
-
         IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>());
 
-        liveIssues.observe(this, issueList -> {
-            List<Issue> collect = issueList.stream().filter(issue -> issue.getProgressID() == display).collect(Collectors.toList());
-            issueAdapter.clear();
-            issueAdapter.addAll(collect);
+        int progress = getArguments().getInt(PROGRESS_TO_DISPLAY);
+        LiveData<List<Issue>> liveIssues = ivm.getAll();
+
+        liveIssues.observeForever(issueList -> {
+            if (issueList == null || issueList.isEmpty()) return;
+
+            List<Issue> collect = issueList.stream().filter(issue -> issue.getProgressID() == progress).collect(Collectors.toList());
+
+            checkIfPermissionRequired(collect);
+            issueAdapter.setIssues(collect);
         });
 
         gridView.setAdapter(issueAdapter);
+    }
+
+    private void checkIfPermissionRequired(List<Issue> issues){
+        boolean hasLocalImage = issues.stream().anyMatch(issue -> issue.getLinkToPreview().startsWith("content://"));
+
+    }
+
+    public void requirePermission(String permissionName) {
+        if (ContextCompat.checkSelfPermission(getContext(), permissionName) != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) getContext(), new String[]{permissionName}, 1);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+
+        if (requestCode != 1) return;
+        if (grantResults.length <= 0) return;
+        if (grantResults[0] != PERMISSION_GRANTED) return;
     }
 }

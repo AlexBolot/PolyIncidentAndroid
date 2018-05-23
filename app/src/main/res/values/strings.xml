@@ -9,12 +9,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="placeholder">image</string>
-    <string name="_30sec">30sec</string>
-    <string name="_10sec">10sec</string>
-    <string name="_5sec">5sec</string>
     <string name="load_image">Load Image</string>
     <string name="first_button">Nouvel incident</string>
     <string name="second_button">Chercher incident</string>
     <string name="third_button">Profil</string>
+    <string name="title_activity_adding">Ajouter un incident</string>
+
     <string name="showMore">Afficher plus</string>
 </resources>

@@ -16,10 +16,10 @@ public interface UserDao {
     LiveData<List<User>> getAll();
 
     @Query("SELECT * FROM user WHERE name LIKE :name")
-    LiveData<User> getByName(String name);
+    User getByName(String name);
 
     @Query("SELECT * FROM user WHERE id LIKE :id")
-    LiveData<User> getByID(int id);
+    User getByID(int id);
 
     @Insert
     void insert(User... users);

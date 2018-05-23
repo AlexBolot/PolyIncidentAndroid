@@ -90,7 +90,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 videoPreview.setVisibility(View.INVISIBLE);
                 if (imageView.getDrawable() == null)
                     imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.placeholder));
-                new ThumbnailLoader(imageView).execute(issue.getLinkToPreview());
+                new ThumbnailLoader(imageView, context).execute(issue.getLinkToPreview());
                 //endregion
             } else {
                 //region ==== Video ====
@@ -176,5 +176,10 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 super.onAnimationEnd(animation);
             }
         });
+    }
+
+    public void setIssues(List<Issue> issues){
+        this.clear();
+        this.addAll(issues);
     }
 }

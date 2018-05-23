@@ -1,6 +1,7 @@
 package polytechnice.si3.ihm.android;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.MediaController;
+
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.Date;
 import java.util.List;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupDB(UserViewModel userViewModel, IssueViewModel issueViewModel,
                          CategoryViewModel categoryViewModel, ImportanceViewModel importanceViewModel,
                          ProgressViewModel progressViewModel) {
+
         //region ========== Deletions =======
         issueViewModel.deleteAll();
         userViewModel.deleteAll();
@@ -50,8 +53,7 @@ public class MainActivity extends AppCompatActivity {
         userViewModel.insert(
                 new User(false, "User1"),
                 new User(false, "User2"),
-                new User(true, "Admin1")
-        );
+                new User(true, "Admin1"));
 
         categoryViewModel.insert(
                 new Category(1, "Pertes"),
@@ -139,6 +141,21 @@ public class MainActivity extends AppCompatActivity {
         progressViewModel.getAll().observeForever(this::print);
 
         //endregion
+
+        userViewModel.getAll().observe(this, users -> {
+            if (users != null && !users.isEmpty())
+                users.stream().findAny().ifPresent(user -> {
+                    userViewModel.logIn(user);
+                    Log.d(TAG, "Logged in : " + user);
+                });
+        });
+
+        FloatingActionButton btnAdd = findViewById(R.id.float_add);
+        btnAdd.setOnClickListener(view -> {
+            Intent addView = new Intent(this, AddingActivity.class);
+            userViewModel.getLoggedIn().ifPresent(user -> addView.putExtra("LoggedIn",user.getId()));
+            startActivity(addView);
+        });
     }
 
     private void print(List list) {

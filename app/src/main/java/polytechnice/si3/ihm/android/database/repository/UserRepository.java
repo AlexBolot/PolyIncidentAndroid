@@ -5,6 +5,8 @@ import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import polytechnice.si3.ihm.android.database.GlobalDB;
 import polytechnice.si3.ihm.android.database.dao.UserDao;
@@ -28,6 +30,16 @@ public class UserRepository {
         return users;
     }
 
+    public Optional<User> getByID(int userID) {
+        try {
+            return Optional.ofNullable(new getByIDAsyncTask().execute(userID).get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
     public void insert(User... users) {
         new insertAsyncTask().execute(users);
     }
@@ -43,6 +55,14 @@ public class UserRepository {
     //----------------------------------------------------//
     //-------------------- AsyncTasks --------------------//
     //----------------------------------------------------//
+
+    private static class getByIDAsyncTask extends AsyncTask<Integer, Void, User> {
+
+        @Override
+        protected User doInBackground(Integer... integers) {
+            return userDao.getByID(integers[0]);
+        }
+    }
 
     private static class insertAsyncTask extends AsyncTask<User, Void, Void> {
         @Override

@@ -44,9 +44,6 @@ public class Progress {
 
     @Override
     public String toString() {
-        return "Progress{" +
-                "id=" + id +
-                ", label='" + label + '\'' +
-                '}';
+        return label;
     }
 }

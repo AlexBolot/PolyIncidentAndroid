@@ -89,6 +89,7 @@
         fab:fab_labelsPosition="left">
 
         <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/float_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/blue"
@@ -98,21 +99,23 @@
             fab:fab_title="@string/first_button" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/float_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/blue"
             fab:fab_colorPressed="@color/blue_pressed"
-            fab:fab_size="mini"
             fab:fab_icon="@drawable/wen"
+            fab:fab_size="mini"
             fab:fab_title="@string/second_button" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/float_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/blue"
             fab:fab_colorPressed="@color/blue_pressed"
-            fab:fab_size="mini"
             fab:fab_icon="@drawable/user"
+            fab:fab_size="mini"
             fab:fab_title="@string/third_button" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

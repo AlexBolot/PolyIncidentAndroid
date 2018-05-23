@@ -44,9 +44,6 @@ public class Importance {
 
     @Override
     public String toString() {
-        return "Importance{" +
-                "id=" + id +
-                ", label='" + label + '\'' +
-                '}';
+        return label;
     }
 }
