@@ -16,8 +16,7 @@ public class Importance {
 
     @Ignore
     public Importance(String label) {
-        this.id = 0;
-        this.label = label;
+        this(0, label);
     }
 
     @Deprecated

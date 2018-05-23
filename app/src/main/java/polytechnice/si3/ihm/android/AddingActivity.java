@@ -56,7 +56,7 @@ public class AddingActivity extends AppCompatActivity {
         findViewById(R.id.btn_add_pic).setOnClickListener(view -> getImageFromAlbum());
 
         //TODO : this is temporary
-        findViewById(R.id.btn_add_pos).setOnClickListener(view -> request());
+        findViewById(R.id.btn_add_pos).setOnClickListener(view-> startActivity(new Intent(this, MapsActivity.class)));
 
         findViewById(R.id.btn_add_issue).setOnClickListener(view -> addIssue());
 

@@ -16,4 +16,5 @@
     <string name="title_activity_adding">Ajouter un incident</string>
 
     <string name="showMore">Afficher plus</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
