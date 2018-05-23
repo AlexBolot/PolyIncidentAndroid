@@ -1,9 +1,6 @@
 package polytechnice.si3.ihm.android;
 
-import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.net.Uri;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -18,10 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
-import android.view.View;
-import android.widget.Button;
-import android.widget.MediaController;
-
 import java.util.Date;
 import java.util.List;
 
