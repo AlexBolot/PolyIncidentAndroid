@@ -47,11 +47,14 @@ public class IssueDetailsView extends AppCompatActivity {
         TextView description = findViewById(R.id.descriptionLayout);
         description.setText(issue.getDescription());
 
+        TextView emergencyPhoneNumber = findViewById(R.id.emergencyPhoneNumber);
+        emergencyPhoneNumber.setText("0" + issue.getEmergencyPhoneNumber());
+
         Button callButton = findViewById(R.id.phoneCallButton);
         callButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                callIntent.setData(Uri.parse("tel:(+33)" + issue.getPhoneNumber()));
+                callIntent.setData(Uri.parse("tel:(+33)" + issue.getEmergencyPhoneNumber()));
                 startActivity(callIntent);
             }
         });
@@ -60,7 +63,7 @@ public class IssueDetailsView extends AppCompatActivity {
         smsButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
             public void onClick(View v) {
-                String number = "(+33)" + issue.getPhoneNumber();
+                String number = "(+33)" + issue.getEmergencyPhoneNumber();
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
             }
         });

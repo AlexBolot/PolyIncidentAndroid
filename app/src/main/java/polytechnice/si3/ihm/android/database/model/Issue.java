@@ -49,11 +49,11 @@ public class Issue {
     private int importanceID;
 
     @ColumnInfo
-    private String phoneNumber;
+    private String emergencyPhoneNumber;
 
     @Ignore
     public Issue(int assigneeID, int creatorID, String title, String description, String linkToPreview,
-                 String date, int categoryID, int progressID, int importanceID, String phoneNumber) {
+                 String date, int categoryID, int progressID, int importanceID, String emergencyPhoneNumber) {
         this.id = 0;
         this.assigneeID = assigneeID;
         this.creatorID = creatorID;
@@ -64,12 +64,12 @@ public class Issue {
         this.categoryID = categoryID;
         this.progressID = progressID;
         this.importanceID = importanceID;
-        this.phoneNumber = phoneNumber;
+        this.emergencyPhoneNumber = emergencyPhoneNumber;
     }
 
     @Deprecated
     public Issue(int id, int assigneeID, int creatorID, String title, String description, String linkToPreview,
-                 String date, int categoryID, int progressID, int importanceID, String phoneNumber) {
+                 String date, int categoryID, int progressID, int importanceID, String emergencyPhoneNumber) {
         this.id = id;
         this.assigneeID = assigneeID;
         this.creatorID = creatorID;
@@ -80,7 +80,7 @@ public class Issue {
         this.categoryID = categoryID;
         this.progressID = progressID;
         this.importanceID = importanceID;
-        this.phoneNumber = phoneNumber;
+        this.emergencyPhoneNumber = emergencyPhoneNumber;
     }
 
     public Issue(Intent intentProvidingData) {
@@ -95,7 +95,7 @@ public class Issue {
         categoryID = intentProvidingData.getIntExtra("categoryID", -1);
         importanceID = intentProvidingData.getIntExtra("importanceID", -1);
         progressID = intentProvidingData.getIntExtra("progressID", -1);
-        phoneNumber = intentProvidingData.getStringExtra("phoneNumber");
+        emergencyPhoneNumber = intentProvidingData.getStringExtra("emergencyPhoneNumber");
     }
 
     //region --------------- Getters and Setters ---------------
@@ -180,9 +180,9 @@ public class Issue {
         this.importanceID = importanceID;
     }
 
-    public String getPhoneNumber() { return this.phoneNumber; }
+    public String getEmergencyPhoneNumber() { return this.emergencyPhoneNumber; }
 
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setEmergencyPhoneNumber(String emergencyPhoneNumber) { this.emergencyPhoneNumber = emergencyPhoneNumber; }
 
     //endregion
 
@@ -198,7 +198,7 @@ public class Issue {
         intent.putExtra("categoryID", this.categoryID);
         intent.putExtra("importanceID", this.importanceID);
         intent.putExtra("progressID", this.progressID);
-        intent.putExtra("phoneNumber", this.phoneNumber);
+        intent.putExtra("emergencyPhoneNumber", this.emergencyPhoneNumber);
     }
 
     @Override
@@ -214,7 +214,7 @@ public class Issue {
                 ", categoryID=" + categoryID +
                 ", progressID=" + progressID +
                 ", importanceID=" + importanceID +
-                ", phoneNumber=" + phoneNumber +
+                ", phoneNumber=" + emergencyPhoneNumber +
                 '}';
     }
 }

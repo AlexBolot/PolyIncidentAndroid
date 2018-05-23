@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -34,12 +36,13 @@ import polytechnice.si3.ihm.android.database.viewmodel.ImportanceViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
+import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class AddingActivity extends AppCompatActivity {
 
     private String selectedPath = "";
-    private static final int RESULT_PICK_CONTACT = 85500;
+    private EditText txtPhoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +61,21 @@ public class AddingActivity extends AppCompatActivity {
         findViewById(R.id.btn_add_issue).setOnClickListener(view -> addIssue());
 
         setUpSpinners();
-    }
 
-    public void pickContact(View v)
-    {
-        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-        startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
+        Button pickContact = findViewById(R.id.pickContact);
+
+        txtPhoneNumber = findViewById(R.id.phoneNumber);
+
+        pickContact.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent pickContact =  new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(pickContact, 1);
+                Log.d("HERE1", "au bon endroit");
+            }
+        });
     }
 
     private void addIssue() {
@@ -79,7 +90,6 @@ public class AddingActivity extends AppCompatActivity {
         Spinner ddlCategory = findViewById(R.id.ddlCategory);
         Spinner ddlImportance = findViewById(R.id.ddlImportance);
         Spinner ddlAssignee = findViewById(R.id.ddlAssignee);
-        EditText txtPhoneNumber = findViewById(R.id.phoneNumber);
 
         String title = txtTitle.getText().toString().trim();
         String descr = txtDescr.getText().toString().trim();
@@ -215,7 +225,27 @@ public class AddingActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
+
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+                Cursor cursor = null;
+            try {
+                String phoneNo = null ;
+                String name = null;
+                // getData() method will have the Content Uri of the selected contact
+                Uri contactUri = data.getData();
+                //Query the content uri
+                cursor = getContentResolver().query(contactUri, null, null, null, null);
+                cursor.moveToFirst();
+                int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                phoneNo = cursor.getString(phoneIndex);
+                Log.d("PHONENUMBER", "number : " + phoneNo);
+                txtPhoneNumber.setText(phoneNo);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }
+        else if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             Uri selectedImage = data.getData();
 
             selectedPath = selectedImage.toString();
