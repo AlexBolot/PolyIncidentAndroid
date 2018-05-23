@@ -9,11 +9,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,6 +39,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 public class AddingActivity extends AppCompatActivity {
 
     private String selectedPath = "";
+    private static final int RESULT_PICK_CONTACT = 85500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,13 @@ public class AddingActivity extends AppCompatActivity {
         setUpSpinners();
     }
 
+    public void pickContact(View v)
+    {
+        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+        startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
+    }
+
     private void addIssue() {
 
         //Get ViewModel
@@ -69,12 +79,14 @@ public class AddingActivity extends AppCompatActivity {
         Spinner ddlCategory = findViewById(R.id.ddlCategory);
         Spinner ddlImportance = findViewById(R.id.ddlImportance);
         Spinner ddlAssignee = findViewById(R.id.ddlAssignee);
+        EditText txtPhoneNumber = findViewById(R.id.phoneNumber);
 
         String title = txtTitle.getText().toString().trim();
         String descr = txtDescr.getText().toString().trim();
         Category category = (Category) ddlCategory.getSelectedItem();
         Importance importance = (Importance) ddlImportance.getSelectedItem();
         User assignee = (User) ddlAssignee.getSelectedItem();
+        String phoneNumber = txtPhoneNumber.getText().toString().trim();
 
         userViewModel.getLoggedIn().ifPresent(currentUser -> {
             int assigneeID = assignee.getId();
@@ -92,7 +104,8 @@ public class AddingActivity extends AppCompatActivity {
                     new Date().toString(),
                     categoryID,
                     progressID,
-                    importanceID);
+                    importanceID,
+                    phoneNumber);
 
             issueViewModel.insert(issue);
 
