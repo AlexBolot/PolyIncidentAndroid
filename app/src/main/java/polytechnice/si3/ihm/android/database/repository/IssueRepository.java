@@ -43,6 +43,10 @@ public class IssueRepository {
         new insertAsyncTask().execute(issues);
     }
 
+    public void update(Issue... issues) {
+        new updateAsyncTask().execute(issues);
+    }
+
     public void delete(Issue... issues) {
         new deleteAsyncTask().execute(issues);
     }
@@ -72,7 +76,7 @@ public class IssueRepository {
         @Override
         protected void onPostExecute(LiveData<List<Issue>> issues) {
             issues.observeForever(issueList -> {
-                if(this.issues.getValue() == null || issueList == null) return;
+                if (this.issues.getValue() == null || issueList == null) return;
 
                 this.issues.getValue().clear();
                 this.issues.getValue().addAll(issueList);
@@ -84,6 +88,15 @@ public class IssueRepository {
         @Override
         protected Void doInBackground(final Issue... issues) {
             issueDao.insert(issues);
+            return null;
+        }
+    }
+
+    private static class updateAsyncTask extends AsyncTask<Issue, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Issue... issues) {
+            issueDao.update(issues);
             return null;
         }
     }

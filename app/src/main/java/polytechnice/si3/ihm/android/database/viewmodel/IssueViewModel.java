@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import polytechnice.si3.ihm.android.database.model.Issue;
+import polytechnice.si3.ihm.android.database.model.Progress;
 import polytechnice.si3.ihm.android.database.repository.IssueRepository;
 
 public class IssueViewModel extends AndroidViewModel {
@@ -27,6 +28,36 @@ public class IssueViewModel extends AndroidViewModel {
 
     public void insert(Issue... issues) {
         issueRepository.insert(issues);
+    }
+
+    /**
+     * Changes the progress of an issue and saves changes in the database.
+     *
+     * @param issue       Issue to update with a new progress
+     * @param newProgress New progress of the issue
+     */
+    public void updateProgress(Issue issue, Progress newProgress) {
+        updateProgress(issue, newProgress.getId());
+    }
+
+    /**
+     * Changes the progress of an issue and saves changes in the database.
+     *
+     * @param issue         Issue to update with a new progress
+     * @param newProgressID ID of the new progress of the issue
+     */
+    public void updateProgress(Issue issue, int newProgressID) {
+        issue.setProgressID(newProgressID);
+        update(issue);
+    }
+
+    /**
+     * Send issues to the DB to update them.
+     *
+     * @param issues Issues to update in DB
+     */
+    public void update(Issue... issues) {
+        issueRepository.update(issues);
     }
 
     public void delete(Issue... issues) {
