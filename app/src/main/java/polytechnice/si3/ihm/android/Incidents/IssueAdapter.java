@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -17,10 +19,12 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.io.InputStream;
 import java.util.List;
 
 import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.SinglePlayVideoView;
+import polytechnice.si3.ihm.android.SinglePlayVideoView.PlayPauseListener;
 import polytechnice.si3.ihm.android.database.model.Issue;
 
 public class IssueAdapter extends ArrayAdapter<Issue> {
@@ -75,7 +79,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
             description.setText(desc);
         } else {
             description.setText(issue.getDescription());
-            ImageView showMoreImg = (ImageView) view.findViewById(R.id.showMoreImg);
+            ImageView showMoreImg = view.findViewById(R.id.showMoreImg);
             showMoreImg.setVisibility(View.INVISIBLE);
         }
 
@@ -83,32 +87,45 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
         SinglePlayVideoView videoPreview = view.findViewById(R.id.videoPreview);
 
-        if (issue.getLinkToPreview() != null) {
-            if (isImg(issue.getLinkToPreview())) {
+        String link = issue.getLinkToPreview();
+
+        if (link != null && !link.isEmpty()) {
+            if (isImg(link)) {
                 //region ==== Image ====
+
                 //If this is an image to preview
                 videoPreview.setVisibility(View.INVISIBLE);
+
+                //Load default placeholder
                 if (imageView.getDrawable() == null)
                     imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.placeholder));
-                new ThumbnailLoader(imageView, context).execute(issue.getLinkToPreview());
+
+                //If image is from local or web
+                if (link.startsWith("content://")) {
+                    imageView.setImageBitmap(loadImage(link));
+                } else {
+                    new ThumbnailLoader(imageView).execute(link);
+                }
+
                 //endregion
+
             } else {
                 //region ==== Video ====
 
                 //If the link point a video, we load a video component
-                Log.d(TAG + "_loadVideo", "Video : " + issue.getLinkToPreview());
+                Log.d(TAG + "_loadVideo", "Video : " + link);
                 imageView.setVisibility(View.INVISIBLE);
 
                 ImageView placeholder = view.findViewById(R.id.loadingVideo);
                 placeholder.setVisibility(View.VISIBLE);
 
                 //region ========== VideoView ==========
-                videoPreview.setVideoPath(issue.getLinkToPreview());
+                videoPreview.setVideoPath(link);
                 videoPreview.setMediaController(new MediaController(context));
                 videoPreview.requestFocus();
                 //we set an setOnPreparedListener in order to know when the video file is ready for playback
 
-                videoPreview.setPlayPauseListener(new SinglePlayVideoView.PlayPauseListener() {
+                videoPreview.setPlayPauseListener(new PlayPauseListener() {
                     @Override
                     public void onPlay() {
                         Log.d(TAG + "_videoPlayer", "play");
@@ -141,10 +158,8 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
         Intent intent = new Intent(this.getContext(), IssueDetailsView.class);
         issue.feedIntent(intent);
-        view.findViewById(R.id.inc_description).setOnClickListener(
-                v -> view.getContext().startActivity(intent));
-        title.setOnClickListener(
-                v -> view.getContext().startActivity(intent));
+        view.findViewById(R.id.inc_description).setOnClickListener(v -> view.getContext().startActivity(intent));
+        title.setOnClickListener(v -> view.getContext().startActivity(intent));
 
         //endregion
     }
@@ -178,8 +193,18 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         });
     }
 
-    public void setIssues(List<Issue> issues){
+    public void setIssues(List<Issue> issues) {
         this.clear();
         this.addAll(issues);
+    }
+
+    private Bitmap loadImage(String localPath) {
+        try (InputStream inputStream = getContext().getContentResolver().openInputStream(Uri.parse(localPath))) {
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (Exception e) {
+            Log.d("Debug.catch", e.getMessage());
+        }
+
+        return null;
     }
 }

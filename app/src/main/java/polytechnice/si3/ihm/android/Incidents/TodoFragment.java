@@ -22,6 +22,7 @@ import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.database.model.Issue;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 @SuppressWarnings("ConstantConditions")
@@ -65,29 +66,18 @@ public class TodoFragment extends Fragment {
 
             List<Issue> collect = issueList.stream().filter(issue -> issue.getProgressID() == progress).collect(Collectors.toList());
 
-            checkIfPermissionRequired(collect);
+            checkPermission(collect);
             issueAdapter.setIssues(collect);
         });
 
         gridView.setAdapter(issueAdapter);
     }
 
-    private void checkIfPermissionRequired(List<Issue> issues){
+    private void checkPermission(List<Issue> issues) {
         boolean hasLocalImage = issues.stream().anyMatch(issue -> issue.getLinkToPreview().startsWith("content://"));
 
-    }
-
-    public void requirePermission(String permissionName) {
-        if (ContextCompat.checkSelfPermission(getContext(), permissionName) != PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) getContext(), new String[]{permissionName}, 1);
+        if (hasLocalImage && ContextCompat.checkSelfPermission(getContext(), READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) getContext(), new String[]{READ_EXTERNAL_STORAGE}, 1);
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-
-        if (requestCode != 1) return;
-        if (grantResults.length <= 0) return;
-        if (grantResults[0] != PERMISSION_GRANTED) return;
     }
 }
