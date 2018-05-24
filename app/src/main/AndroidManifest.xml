@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -30,11 +31,7 @@
         <activity
             android:name=".Incidents.IssueDetailsView"
             android:label="@string/title_view_details"
-            android:parentActivityName=".VisualizationActivity"
             tools:ignore="InnerclassSeparator">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="polytechnice.si3.ihm.android.VisualizationActivity" />
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
@@ -42,11 +39,7 @@
 
         <activity
             android:name=".AddingActivity"
-            android:label="@string/title_activity_adding"
-            android:parentActivityName=".VisualizationActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="polytechnice.si3.ihm.android.VisualizationActivity" />
+            android:label="@string/title_activity_adding">
         </activity>
 
         <meta-data

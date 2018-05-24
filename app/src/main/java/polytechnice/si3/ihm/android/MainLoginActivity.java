@@ -47,14 +47,17 @@ public class MainLoginActivity extends AppCompatActivity {
         progressViewModel.deleteAll();
 
         userViewModel.insert(
-                new User(false, "User1", "0621236433"),
-                new User(false, "User2", "0621246433"),
-                new User(true, "Admin1", "0621256333"));
+                new User(false, "Jean Dove", "0655625545"),
+                new User(false, "Paul Bismut", "0621246433"),
+                new User(true, "Jeanne Mensoif", "0621256333"),
+                new User(false, "Christine Bourrin", "0612336533"));
 
         categoryViewModel.insert(
                 new Category("Pertes"),
                 new Category("Dégâts"),
-                new Category("Inquiétude"));
+                new Category("Sécurité"),
+                new Category("Panne"),
+                new Category("Autre"));
 
         importanceViewModel.insert(
                 new Importance("Faible"),
@@ -62,7 +65,7 @@ public class MainLoginActivity extends AppCompatActivity {
                 new Importance("Forte"));
 
         progressViewModel.insert(
-                new Progress("En cours"),
+                new Progress("À traiter"),
                 new Progress("En cours de traitement"),
                 new Progress("Traité"));
 
@@ -78,23 +81,23 @@ public class MainLoginActivity extends AppCompatActivity {
 
                 issueViewModel.insert(
                         new Issue(userList.get(0).getId(), userList.get(1).getId(),
-                                "Je veux un raton laveur", "Il est trop mignon",
+                                "Ampoules grillées", "Plus de lumières qui fonctionnent en salle E-107",
                                 "https://i.imgur.com/VVWVgxp.png", formatter.format(today),
-                                1, 2, 2, "0621236433"),
-                        new Issue(userList.get(1).getId(), userList.get(2).getId(),
-                                "Vase cassé", "Je balance pas, mais le vase est cassé",
+                                4, 1, 2, "0621236433"),
+                        new Issue(userList.get(2).getId(), userList.get(1).getId(),
+                                "Voiture mal garée", "Je balance pas, mais une voiture gêne fortement le passage",
                                 "https://i.imgur.com/URVyanB.png", formatter.format(today),
-                                1, 3, 2, "0621236433"),
-                        new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
-                                "On me suit", "Je me sens épié depuis quelques temps",
+                                5, 3, 3, "0621236433"),
+                        new Issue(userList.get(0).getId(), userList.get(0).getId(),
+                                "Clime cassée", "Le dernier partiel s'est passé dans une châleur écrasante, très gênant (amphi E+131)",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
                                 formatter.format(today),
-                                1, 1, 2, "0621236433"),
-                        new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
-                                "On me suit", "J'ai faim.",
+                                4, 1, 2, "0621236433"),
+                        new Issue(userList.get(2).getId(), userList.get(1).getId(),
+                                "Chargeur perdu", "J'ai perdu le chargeur de mon téléphone",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
                                 formatter.format(today),
-                                1, 1, 2, "0621236433")
+                                2, 1, 1, "0621236433")
                 );
             }
         });
@@ -174,7 +177,7 @@ public class MainLoginActivity extends AppCompatActivity {
         Log.d(TAG + "_login", "Try to log : {" + login.getText().toString() + ", "
                 + password.getText().toString() + "}");
         User tryToConnect = userViewModel.getByNameAndPhoneNumber(login.getText().toString(),
-                password.getText().toString()).orElse(userViewModel.getByNameAndPhoneNumber("Admin1", "0621256333").orElse(null));
+                password.getText().toString()).orElse(userViewModel.getByNameAndPhoneNumber("Jeanne Mensoif", "0621256333").orElse(null));
         if (tryToConnect == null)
             Toast.makeText(this, "Identifiants incorrects", Toast.LENGTH_SHORT).show();
         return tryToConnect;
