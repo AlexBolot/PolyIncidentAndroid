@@ -20,4 +20,5 @@
 
     <string name="showMore">Afficher plus</string>
     <string name="title_activity_maps">Map</string>
+    <string name="connexion_button_label">Se connecter</string>
 </resources>

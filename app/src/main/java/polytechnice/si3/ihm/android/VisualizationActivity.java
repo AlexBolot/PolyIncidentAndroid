@@ -33,9 +33,9 @@ import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.ProgressViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
-public class MainActivity extends AppCompatActivity {
+public class VisualizationActivity extends AppCompatActivity {
 
-    private static String TAG = "MainActivity";
+    private static String TAG = "VisualizationActivity";
     private static boolean mustInitDB = false;
 
     //region Database
@@ -109,10 +109,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_visualisation);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three primary sections of the activity.
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 

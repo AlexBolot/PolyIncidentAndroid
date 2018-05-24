@@ -56,7 +56,8 @@ public class IssueDetailsView extends AppCompatActivity {
         //TODO Listener to start UserActivity on creator or resp
 
         TextView progressT = findViewById(R.id.progress);
-        progressT.setText(progress.getLabel());
+        if (progress != null)
+            progressT.setText(progress.getLabel());
 
         TextView dateT = findViewById(R.id.date);
         dateT.setText(issue.getDate());
@@ -68,10 +69,12 @@ public class IssueDetailsView extends AppCompatActivity {
         emergencyPhoneNumberT.setText("0" + issue.getEmergencyPhoneNumber());
 
         TextView importanceT = findViewById(R.id.importance);
-        importanceT.setText(importance.getLabel());
+        if (importance != null)
+            importanceT.setText(importance.getLabel());
 
         TextView categoryT = findViewById(R.id.category);
-        categoryT.setText(category.getLabel());
+        if (category != null)
+            categoryT.setText(category.getLabel());
 
 
         Button callButton = findViewById(R.id.phoneCallButton);
