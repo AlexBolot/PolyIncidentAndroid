@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Projet IHM</string>
+    <string name="app_name">PolyIncidents</string>
     <string name="tab_text_1">À traiter</string>
     <string name="tab_text_2">En cours de traitement</string>
     <string name="tab_text_3">Traité</string>
@@ -16,6 +16,7 @@
     <string name="title_main_activity">PolyIncidents</string>
     <string name="title_activity_adding">Ajouter un incident</string>
     <string name="title_view_details">Détails de l\'incident</string>
+    <string name="title_profile">Mon profil</string>
 
     <string name="showMore">Afficher plus</string>
     <string name="title_activity_maps">Map</string>

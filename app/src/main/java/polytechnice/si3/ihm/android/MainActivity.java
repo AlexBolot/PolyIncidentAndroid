@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
                 new Importance("Forte"));
 
         progressViewModel.insert(
-                new Progress("TODO"),
-                new Progress("DOING"),
-                new Progress("DONE"));
+                new Progress("En cours"),
+                new Progress("En cours de traitement"),
+                new Progress("Traité"));
 
 
         Date today = new Date();
@@ -164,6 +164,13 @@ public class MainActivity extends AppCompatActivity {
             Intent addView = new Intent(this, AddingActivity.class);
             userViewModel.getLoggedIn().ifPresent(user -> addView.putExtra("LoggedIn", user.getId()));
             startActivity(addView);
+        });
+
+        FloatingActionButton btnProfile = findViewById(R.id.float_profile);
+        btnProfile.setOnClickListener(view -> {
+            Intent profileView = new Intent(this, ProfileActivity.class);
+            userViewModel.getLoggedIn().ifPresent(user -> profileView.putExtra("Logged in", user.getId()));
+            startActivity(profileView);
         });
     }
 
