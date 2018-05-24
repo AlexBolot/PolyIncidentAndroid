@@ -115,23 +115,63 @@
                 android:id="@+id/adminButtonsLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@color/cardview_dark_background"
+                android:background="#82b1ff"
                 android:orientation="horizontal"
-                android:paddingRight="5dp">
+                android:paddingBottom="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="5dp">
 
-                <Button
+                <ImageButton
+                    android:id="@+id/moveBackwardButton"
+                    style="@android:style/Widget.Material.ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:maxWidth="40dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/button_left_arrow" />
+
+                <ImageButton
                     android:id="@+id/editButton"
+                    style="@android:style/Widget.ImageButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:maxWidth="40dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/edit" />
 
-                <Button
+                <ImageButton
                     android:id="@+id/deleteButton"
+                    style="@android:style/Widget.Holo.ImageButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:text="Button" />
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:maxWidth="40dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/delete" />
+
+                <ImageButton
+                    android:id="@+id/moveForwardButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:maxWidth="40dp"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/button_right_arrow" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -163,6 +203,7 @@
                     android:layout_height="10dp"
                     android:background="@color/cardview_light_background"
                     android:contentDescription="@string/showMore"
+                    android:visibility="gone"
                     app:srcCompat="@drawable/showmore" />
             </LinearLayout>
 

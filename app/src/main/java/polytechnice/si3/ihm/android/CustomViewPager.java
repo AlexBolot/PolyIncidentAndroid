@@ -3,6 +3,7 @@ package polytechnice.si3.ihm.android;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.MediaController;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class CustomViewPager extends ViewPager {
 
+    private static final String TAG = "CustomViewPager";
     private boolean enabled;
     private List<MediaController> mediaControllers;
 
@@ -26,6 +28,8 @@ public class CustomViewPager extends ViewPager {
             if (event.getAction() == MotionEvent.ACTION_MOVE)
                 hideMediaControllers();
             return super.onTouchEvent(event);
+        } else {
+            Log.d(TAG, "event received, but view disabled");
         }
         return false;
     }
@@ -53,10 +57,4 @@ public class CustomViewPager extends ViewPager {
     public void addMediaController(MediaController mediaController) {
         mediaControllers.add(mediaController);
     }
-
-    public void removeMediaController(MediaController mediaController) {
-        mediaControllers.remove(mediaController);
-    }
-
-
 }

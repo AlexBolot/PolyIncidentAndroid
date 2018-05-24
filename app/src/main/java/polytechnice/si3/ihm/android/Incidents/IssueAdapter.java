@@ -40,8 +40,11 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
     private View swippedDesc;
     private float xStart;
+    private float yStart;
+    private boolean canBeClic = false;
 
     private float totalDx;
+    private float totalDy;
 
     private CustomViewPager viewPager;
 
@@ -90,10 +93,10 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
             StringBuilder desc =
                     new StringBuilder(issue.getDescription().substring(0, i)).append(" ...");
             description.setText(desc);
+            ImageView showMoreImg = view.findViewById(R.id.showMoreImg);
+            showMoreImg.setVisibility(View.VISIBLE);
         } else {
             description.setText(issue.getDescription());
-            ImageView showMoreImg = view.findViewById(R.id.showMoreImg);
-            showMoreImg.setVisibility(View.GONE);
         }
 
         //region ===== Init the swiping action menu ====
@@ -103,9 +106,6 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         View adminsButton = view.findViewById(R.id.adminButtonsLayout);
 
         description.setOnTouchListener((v, event) -> {
-            if (event.getAction() != MotionEvent.ACTION_MOVE)
-                Log.d(TAG + "_test", event.toString());
-
             if (v == null)
                 return false;
 
@@ -119,11 +119,11 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 Log.d(TAG + "_swipeMenu", "Swipe stopped");
                 if (Math.abs(event.getX() - xStart) < 10) {
                     Log.d(TAG + "_swipeMenu", "Just clicked on desc");
-                    if (swippedDesc == v) {
+                    if (swippedDesc == v && !canBeClic) {
                         Log.d(TAG + "_swipeMenu", "Reset the swippedDesc");
                         swippedDesc.animate().x(0).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                         return true;
-                    } else {
+                    } else if (canBeClic) {
                         //region ========== Clic handler ======
                         Intent intent = new Intent(this.getContext(), IssueDetailsView.class);
                         issue.feedIntent(intent);
@@ -139,15 +139,21 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     swippedDesc.animate().x(0)
                             .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                 xStart = event.getX();
+                yStart = event.getY();
                 totalDx = 0;
+                totalDy = 0;
                 Log.d(TAG + "_swipeMenu", "x start : " + xStart);
                 swippedDesc = v;
+                canBeClic = true;
             }
             //if this is a move, we do the translation
             else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                if (canBeClic && (totalDx > 50 || totalDy > 2))
+                    canBeClic = false;
                 float dx = event.getX() - xStart;
                 Log.d(TAG + "_swipeMenu", "Moved, swipe ?");
                 totalDx += dx;
+                totalDy += Math.abs(event.getY() - yStart);
                 //if we go to right
                 if (dx > 3 && v.getX() + dx <= adminsButton.getWidth()) {
                     if (totalDx < 50) {
@@ -197,8 +203,15 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     new ThumbnailLoader(imageView).execute(link);
                 }
 
-                //endregion
+                //region ===== Clic handler =====
+                imageView.setOnClickListener(v -> {
+                    Intent intent = new Intent(this.getContext(), IssueDetailsView.class);
+                    issue.feedIntent(intent);
+                    view.getContext().startActivity(intent);
+                });
 
+                //endregion
+                //endregion
             } else {
                 //region ==== Video ====
 

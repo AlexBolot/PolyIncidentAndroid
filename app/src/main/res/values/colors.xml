@@ -9,7 +9,7 @@
     <color name="cardview_dark_background">#212121</color>
     <color name="cardview_light_background">#ffffff</color>
     <color name="cardview_text">#000</color>
-    <color name="cardview_backgroung_meta">#0553d9</color>
+    <color name="cardview_backgroung_meta">#056bd9</color>
     <color name="blue">#056bd9</color>
     <color name="blue_pressed">#058bd9</color>
     <color name="half_blue">#057dd9</color>
