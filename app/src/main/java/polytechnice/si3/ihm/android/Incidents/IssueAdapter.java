@@ -158,7 +158,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 }
                 //if this is a move, we do the translation
                 else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (canBeClic && (totalDx > 50 || totalDy > 2))
+                    if (canBeClic && (totalDx > 50 || totalDy > 10) || v.getX() > 100)
                         canBeClic = false;
                     float dx = event.getX() - xStart;
                     Log.d(TAG + "_swipeMenu", "Moved, swipe ?");
@@ -238,6 +238,9 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
         SinglePlayVideoView videoPreview = view.findViewById(R.id.videoPreview);
 
+        ImageView placeHolderPlay = view.findViewById(R.id.placeHolderPlay);
+        videoPreview.setPlaceHolderPlay(placeHolderPlay);
+
         String link = issue.getLinkToPreview();
 
         if (link != null && !link.isEmpty()) {
@@ -302,13 +305,17 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                         slideDown(title);
                     }
                 });
+
                 videoPreview.setOnPreparedListener(mediaPlayer -> {
                     // hide the place holder
-                    placeholder.setVisibility(View.INVISIBLE);
+                    placeholder.setVisibility(View.GONE);
+                    placeHolderPlay.setVisibility(View.VISIBLE);
                     mediaController.hide();
+
                 });
                 videoPreview.seekTo(200);
                 slideDown(title);
+                mediaController.hide();
 
                 //Prevent media player from displaying when we don't want it to
                 viewPager.addMediaController(mediaController);

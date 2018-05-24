@@ -47,6 +47,18 @@
                 app:srcCompat="@drawable/showmore" />
 
             <ImageView
+                android:id="@+id/placeHolderPlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="50dp"
+                android:adjustViewBounds="true"
+                android:alpha="0.6"
+                android:padding="30dp"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                app:srcCompat="@drawable/place_holder_play" />
+
+            <ImageView
                 android:id="@+id/inc_thumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
