@@ -305,7 +305,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 videoPreview.setOnPreparedListener(mediaPlayer -> {
                     // hide the place holder
                     placeholder.setVisibility(View.INVISIBLE);
-//                    mediaController.hide();
+                    mediaController.hide();
                 });
                 videoPreview.seekTo(200);
                 slideDown(title);
