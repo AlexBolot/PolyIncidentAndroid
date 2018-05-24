@@ -17,7 +17,6 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import polytechnice.si3.ihm.android.Incidents.DoingFragment;
 import polytechnice.si3.ihm.android.Incidents.DoneFragment;
@@ -127,30 +126,7 @@ public class VisualizationActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        //region ========== Models ==========
         UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        IssueViewModel issueViewModel = ViewModelProviders.of(this).get(IssueViewModel.class);
-        CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
-        ImportanceViewModel importanceViewModel = ViewModelProviders.of(this).get(ImportanceViewModel.class);
-        ProgressViewModel progressViewModel = ViewModelProviders.of(this).get(ProgressViewModel.class);
-
-        //endregion
-
-        if (mustInitDB)
-            setupDB(userViewModel, issueViewModel, categoryViewModel, importanceViewModel, progressViewModel);
-
-        //region ========== Printing ========
-        userViewModel.getAll().observeForever(this::print);
-        issueViewModel.getAll().observeForever(this::print);
-        categoryViewModel.getAll().observeForever(this::print);
-        importanceViewModel.getAll().observeForever(this::print);
-        progressViewModel.getAll().observeForever(progressList -> {
-            if (progressList != null && !progressList.isEmpty()) {
-                Log.i(TAG, progressList.stream().map(progress -> progress.getLabel() + "-" + progress.getId()).collect(Collectors.toList()).toString());
-            }
-        });
-
-        //endregion
 
         userViewModel.getAll().observe(this, users -> {
             if (users != null && !users.isEmpty())
