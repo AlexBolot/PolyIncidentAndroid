@@ -17,22 +17,14 @@ import polytechnice.si3.ihm.android.database.model.Progress;
 import polytechnice.si3.ihm.android.database.model.User;
 import polytechnice.si3.ihm.android.database.viewmodel.CategoryViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.ImportanceViewModel;
-import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.ProgressViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 public class IssueDetailsView extends AppCompatActivity {
 
-    private static String TAG = "IssueDetailsView";
-
-    private User creator;
-    private User assignee;
-    private Category category;
-    private Importance importance;
-    private Progress progress;
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String TAG = "IssueDetailsView";
         Log.d(TAG, "Activity start");
         setContentView(R.layout.incident_details);
 
@@ -43,44 +35,43 @@ public class IssueDetailsView extends AppCompatActivity {
 
         //region ====== Fetch data =====
         UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        IssueViewModel issueViewModel = ViewModelProviders.of(this).get(IssueViewModel.class);
         CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         ImportanceViewModel importanceViewModel = ViewModelProviders.of(this).get(ImportanceViewModel.class);
         ProgressViewModel progressViewModel = ViewModelProviders.of(this).get(ProgressViewModel.class);
 
-        creator = userViewModel.getByID(issue.getCreatorID()).orElse(null);
-        assignee = userViewModel.getByID(issue.getAssigneeID()).orElse(null);
-        category = categoryViewModel.getByID(issue.getCategoryID()).orElse(null);
-        importance = importanceViewModel.getByID(issue.getImportanceID()).orElse(null);
-        progress = progressViewModel.getByID(issue.getProgressID()).orElse(null);
+        User creator = userViewModel.getByID(issue.getCreatorID()).orElse(null);
+        User assignee = userViewModel.getByID(issue.getAssigneeID()).orElse(null);
+        Category category = categoryViewModel.getByID(issue.getCategoryID()).orElse(null);
+        Importance importance = importanceViewModel.getByID(issue.getImportanceID()).orElse(null);
+        Progress progress = progressViewModel.getByID(issue.getProgressID()).orElse(null);
         //endregion
 
 
-        TextView creator = findViewById(R.id.creator);
-        creator.setText(this.creator.getName());
+        TextView creatorT = findViewById(R.id.creator);
+        creatorT.setText(creator != null ? creator.getName() : "Créateur inconnu");
 
-        TextView assignee = findViewById(R.id.resp);
-        assignee.setText(this.assignee.getName());
+        TextView assigneeT = findViewById(R.id.resp);
+        assigneeT.setText(assignee != null ? assignee.getName() : "Aucun responsable");
 
         //TODO Listener to start UserActivity on creator or resp
 
-        TextView progress = findViewById(R.id.progress);
-        progress.setText(this.progress.getLabel());
+        TextView progressT = findViewById(R.id.progress);
+        progressT.setText(progress.getLabel());
 
-        TextView date = findViewById(R.id.date);
-        date.setText(issue.getDate());
+        TextView dateT = findViewById(R.id.date);
+        dateT.setText(issue.getDate());
 
-        TextView description = findViewById(R.id.descriptionLayout);
-        description.setText(issue.getDescription());
+        TextView descriptionT = findViewById(R.id.descriptionLayout);
+        descriptionT.setText(issue.getDescription());
 
-        TextView emergencyPhoneNumber = findViewById(R.id.emergencyPhoneNumber);
-        emergencyPhoneNumber.setText("0" + issue.getEmergencyPhoneNumber());
+        TextView emergencyPhoneNumberT = findViewById(R.id.emergencyPhoneNumber);
+        emergencyPhoneNumberT.setText("0" + issue.getEmergencyPhoneNumber());
 
-        TextView importance = findViewById(R.id.importance);
-        importance.setText(this.importance.getLabel());
+        TextView importanceT = findViewById(R.id.importance);
+        importanceT.setText(importance.getLabel());
 
-        TextView category = findViewById(R.id.category);
-        category.setText(this.category.getLabel());
+        TextView categoryT = findViewById(R.id.category);
+        categoryT.setText(category.getLabel());
 
 
         Button callButton = findViewById(R.id.phoneCallButton);
