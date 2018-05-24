@@ -101,6 +101,12 @@ public class AddingActivity extends AppCompatActivity {
         User assignee = (User) ddlAssignee.getSelectedItem();
         String phoneNumber = txtPhoneNumber.getText().toString().trim();
 
+        if (txtPhoneNumber.getText().toString().trim().isEmpty()) {
+            phoneNumber = assignee.getPhoneNumber();
+        }
+
+        String finalPhoneNumber = phoneNumber;
+
         userViewModel.getLoggedIn().ifPresent(currentUser -> {
             int assigneeID = assignee.getId();
             int creatorID = currentUser.getId();
@@ -121,7 +127,7 @@ public class AddingActivity extends AppCompatActivity {
                     categoryID,
                     progressID,
                     importanceID,
-                    phoneNumber);
+                    finalPhoneNumber);
 
             issueViewModel.insert(issue);
 
