@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -44,13 +45,14 @@ public class AddingActivity extends AppCompatActivity {
 
     private String selectedPath = "";
     private EditText txtPhoneNumber;
+    private User userConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adding);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        this.userConnected = new User(getIntent());
 
         int loggedIn = getIntent().getIntExtra("LoggedIn", 0);
         UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
@@ -68,6 +70,7 @@ public class AddingActivity extends AppCompatActivity {
         Button pickContact = findViewById(R.id.pickContact);
 
         txtPhoneNumber = findViewById(R.id.phoneNumber);
+        txtPhoneNumber.setText(userConnected.getPhoneNumber());
 
         pickContact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,12 +101,6 @@ public class AddingActivity extends AppCompatActivity {
         User assignee = (User) ddlAssignee.getSelectedItem();
         String phoneNumber = txtPhoneNumber.getText().toString().trim();
 
-        if (txtPhoneNumber.getText().toString().trim().isEmpty()) {
-            phoneNumber = assignee.getPhoneNumber();
-        }
-
-        String finalPhoneNumber = phoneNumber;
-
         userViewModel.getLoggedIn().ifPresent(currentUser -> {
             int assigneeID = assignee.getId();
             int creatorID = currentUser.getId();
@@ -124,7 +121,7 @@ public class AddingActivity extends AppCompatActivity {
                     categoryID,
                     progressID,
                     importanceID,
-                    finalPhoneNumber);
+                    phoneNumber);
 
             issueViewModel.insert(issue);
 
@@ -133,10 +130,13 @@ public class AddingActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Incident ajouté", Toast.LENGTH_SHORT).show();
 
-        Uri uri = Uri.parse("smsto:" + phoneNumber);
-        Intent sendIncidentIntent = new Intent(Intent.ACTION_SENDTO, uri);
-        sendIncidentIntent.putExtra("sms_body", "Votre numéro a été ajouté comme contact d'urgence sur un nouvel incident de PolyIncident");
-        startActivity(sendIncidentIntent);
+        if (!phoneNumber.equals(userConnected.getPhoneNumber())) {
+            Uri uri = Uri.parse("smsto:" + phoneNumber);
+            Intent sendIncidentIntent = new Intent(Intent.ACTION_SENDTO, uri);
+            sendIncidentIntent.putExtra("sms_body", "Je viens d'ajouter votre numéro comme contact d'urgence " +
+                    "sur un nouvel incident de PolyIncident, dont les détails sont : " + title + " : " + descr + ".");
+            startActivity(sendIncidentIntent);
+        }
     }
 
     private void setUpSpinners() {

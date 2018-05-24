@@ -50,7 +50,7 @@ public class VisualizationActivity extends AppCompatActivity {
         FloatingActionButton btnAdd = findViewById(R.id.float_add);
         btnAdd.setOnClickListener(view -> {
             Intent addView = new Intent(this, AddingActivity.class);
-            userViewModel.getLoggedIn().ifPresent(user -> addView.putExtra("LoggedIn", user.getId()));
+            userConnected.feedIntent(addView);
             startActivity(addView);
         });
 
