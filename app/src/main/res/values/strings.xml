@@ -13,7 +13,9 @@
     <string name="first_button">Nouvel incident</string>
     <string name="second_button">Chercher incident</string>
     <string name="third_button">Profil</string>
+    <string name="title_main_activity">PolyIncidents</string>
     <string name="title_activity_adding">Ajouter un incident</string>
+    <string name="title_view_details">Détails de l\'incident</string>
 
     <string name="showMore">Afficher plus</string>
     <string name="title_activity_maps">Map</string>

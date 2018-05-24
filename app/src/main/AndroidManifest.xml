@@ -24,7 +24,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
+            android:label="@string/title_main_activity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,18 +32,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Incidents.IssueDetailsView"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
-            tools:ignore="InnerclassSeparator">
+            android:label="@string/title_view_details"
+            tools:ignore="InnerclassSeparator"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="polytechnice.si3.ihm.android.MainActivity" />
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".AddingActivity"
-            android:label="@string/title_activity_adding" />
+            android:label="@string/title_activity_adding"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="polytechnice.si3.ihm.android.MainActivity" />
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

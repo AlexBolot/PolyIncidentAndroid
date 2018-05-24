@@ -22,6 +22,8 @@ public class IssueDetailsView extends AppCompatActivity {
         Log.d(TAG, "Activity start");
         setContentView(R.layout.incident_details);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Issue issue = new Issue(getIntent());
         TextView title = findViewById(R.id.title);
         title.setText(issue.getTitle());
@@ -47,14 +49,11 @@ public class IssueDetailsView extends AppCompatActivity {
         TextView description = findViewById(R.id.descriptionLayout);
         description.setText(issue.getDescription());
 
-        TextView emergencyPhoneNumber = findViewById(R.id.emergencyPhoneNumber);
-        emergencyPhoneNumber.setText("0" + issue.getEmergencyPhoneNumber());
-
         Button callButton = findViewById(R.id.phoneCallButton);
         callButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                callIntent.setData(Uri.parse("tel:(+33)" + issue.getEmergencyPhoneNumber()));
+                callIntent.setData(Uri.parse("tel:(+33)" + issue.getEmergencyPhoneNumber().substring(1)));
                 startActivity(callIntent);
             }
         });
@@ -63,7 +62,7 @@ public class IssueDetailsView extends AppCompatActivity {
         smsButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
             public void onClick(View v) {
-                String number = "(+33)" + issue.getEmergencyPhoneNumber();
+                String number = "(+33)" + issue.getEmergencyPhoneNumber().substring(1);
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
             }
         });
