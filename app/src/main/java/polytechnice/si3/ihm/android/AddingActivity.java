@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -50,8 +51,6 @@ public class AddingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adding);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.userConnected = new User(getIntent());
 
@@ -131,11 +130,13 @@ public class AddingActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Incident ajouté", Toast.LENGTH_SHORT).show();
 
-        Uri uri = Uri.parse("smsto:" + phoneNumber);
-        Intent sendIncidentIntent = new Intent(Intent.ACTION_SENDTO, uri);
-        sendIncidentIntent.putExtra("sms_body", "Je viens d'ajouter votre numéro comme contact d'urgence " +
-                "sur un nouvel incident de PolyIncident, dont les détails sont : " + title + " : " + descr + ".");
-        startActivity(sendIncidentIntent);
+        if (!phoneNumber.equals(userConnected.getPhoneNumber())) {
+            Uri uri = Uri.parse("smsto:" + phoneNumber);
+            Intent sendIncidentIntent = new Intent(Intent.ACTION_SENDTO, uri);
+            sendIncidentIntent.putExtra("sms_body", "Je viens d'ajouter votre numéro comme contact d'urgence " +
+                    "sur un nouvel incident de PolyIncident, dont les détails sont : " + title + " : " + descr + ".");
+            startActivity(sendIncidentIntent);
+        }
     }
 
     private void setUpSpinners() {

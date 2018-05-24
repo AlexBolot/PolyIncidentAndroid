@@ -45,11 +45,13 @@
             tools:layout_editor_absoluteY="33dp" />
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/resp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="TextView"
+            tools:layout_editor_absoluteX="242dp"
+            tools:layout_editor_absoluteY="152dp" />
 
     </LinearLayout>
 
@@ -66,15 +68,6 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
         <TextView
-            android:id="@+id/resp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView"
-            tools:layout_editor_absoluteX="242dp"
-            tools:layout_editor_absoluteY="152dp" />
-
-        <TextView
             android:id="@+id/creator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,6 +75,14 @@
             android:text="TextView"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="152dp" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -122,22 +123,22 @@
     <TextView
         android:id="@+id/descriptionLayout"
         android:layout_width="315dp"
-        android:layout_height="30dp"
+        android:layout_height="44dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="TextView"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
-        app:layout_constraintHorizontal_bias="0.442"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
     <TextView
         android:id="@+id/contact"
         android:layout_width="142dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:text="Contact d'urgence"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descriptionLayout" />
@@ -146,8 +147,8 @@
         android:id="@+id/phoneCallButton"
         android:layout_width="50dp"
         android:layout_height="38dp"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="164dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/phoneicon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descriptionLayout" />
@@ -157,10 +158,10 @@
         android:layout_width="47dp"
         android:layout_height="38dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/messageicon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.182"
+        app:layout_constraintHorizontal_bias="0.286"
         app:layout_constraintStart_toEndOf="@+id/phoneCallButton"
         app:layout_constraintTop_toBottomOf="@+id/descriptionLayout" />
 

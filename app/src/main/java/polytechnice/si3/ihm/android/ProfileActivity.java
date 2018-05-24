@@ -25,7 +25,5 @@ public class ProfileActivity extends AppCompatActivity {
         name.setText(user.getName());
         role.setText(user.isAdmin() ? "Administrateur" : "Utilisateur classique");
         userPhoneNumber.setText(user.getPhoneNumber());
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

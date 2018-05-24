@@ -28,7 +28,6 @@ public class IssueDetailsView extends AppCompatActivity {
         Log.d(TAG, "Activity start");
         setContentView(R.layout.incident_details);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Issue issue = new Issue(getIntent());
         TextView title = findViewById(R.id.title);
         title.setText(issue.getTitle());
@@ -47,10 +46,10 @@ public class IssueDetailsView extends AppCompatActivity {
         //endregion
 
         TextView creatorT = findViewById(R.id.creator);
-        creatorT.setText(creator != null ? creator.getName() : "Créateur inconnu");
+        creatorT.setText(creator != null ? "Créé par " + creator.getName() : "Créateur inconnu");
 
         TextView assigneeT = findViewById(R.id.resp);
-        assigneeT.setText(assignee != null ? assignee.getName() : "Aucun responsable");
+        assigneeT.setText(assignee != null ? "Assigné à " + assignee.getName() : "Aucun responsable");
 
         //TODO Listener to start UserActivity on creator or resp
 
@@ -64,28 +63,25 @@ public class IssueDetailsView extends AppCompatActivity {
         TextView descriptionT = findViewById(R.id.descriptionLayout);
         descriptionT.setText(issue.getDescription());
 
-        TextView emergencyPhoneNumberT = findViewById(R.id.contact);
-        emergencyPhoneNumberT.setText("0" + issue.getEmergencyPhoneNumber());
-
         TextView importanceT = findViewById(R.id.importance);
         if (importance != null)
-            importanceT.setText(importance.getLabel());
+            importanceT.setText("Urgence " + importance.getLabel());
 
         TextView categoryT = findViewById(R.id.category);
         if (category != null)
-            categoryT.setText(category.getLabel());
+            categoryT.setText("Catégorie " + category.getLabel());
 
 
         Button callButton = findViewById(R.id.phoneCallButton);
         callButton.setOnClickListener(v -> {
             Intent callIntent = new Intent(Intent.ACTION_DIAL);
-            callIntent.setData(Uri.parse("tel:(+33)" + issue.getEmergencyPhoneNumber()));
+            callIntent.setData(Uri.parse("tel:(+33)" + issue.getEmergencyPhoneNumber().substring(1)));
             startActivity(callIntent);
         });
 
         Button smsButton = findViewById(R.id.smsButton);
         smsButton.setOnClickListener(v -> {
-            String number = "(+33)" + issue.getEmergencyPhoneNumber();
+            String number = "(+33)" + issue.getEmergencyPhoneNumber().substring(1);
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.fromParts("sms", number, null)));
         });
     }
