@@ -32,7 +32,7 @@ public class MainLoginActivity extends AppCompatActivity {
     private static String TAG = "MainLoginActivity";
     private UserViewModel userViewModel;
 
-    private static boolean mustInitDB = true;
+    private static boolean mustInitDB = false;
 
     //region Database
     private void setupDB(UserViewModel userViewModel, IssueViewModel issueViewModel,
