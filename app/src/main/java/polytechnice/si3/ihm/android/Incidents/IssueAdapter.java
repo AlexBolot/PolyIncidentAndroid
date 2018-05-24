@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
@@ -30,9 +31,11 @@ import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.SinglePlayVideoView;
 import polytechnice.si3.ihm.android.SinglePlayVideoView.PlayPauseListener;
 import polytechnice.si3.ihm.android.database.model.Issue;
+import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
 
 public class IssueAdapter extends ArrayAdapter<Issue> {
     private final static String TAG = "IssueAdapter";
+    private final IssueViewModel issueViewModel;
     private List<Issue> issues;
     private Context context;
 
@@ -49,12 +52,13 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
     private CustomViewPager viewPager;
 
 
-    public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues, CustomViewPager viewPager) {
+    public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues, CustomViewPager viewPager, IssueViewModel issueViewModel) {
         super(context, 0, issues);
         Log.d("IncidentAdapter", "Create incident adapter with " + issues.toString());
         this.issues = issues;
         this.context = context;
         this.viewPager = viewPager;
+        this.issueViewModel = issueViewModel;
     }
 
     @NonNull
@@ -105,6 +109,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
         View adminsButton = view.findViewById(R.id.adminButtonsLayout);
 
+        //region ==== Swipe ====
         description.setOnTouchListener((v, event) -> {
             if (v == null)
                 return false;
@@ -179,6 +184,44 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
         //endregion
 
+        //region ==== Buttons ==
+        ImageButton moveBackward = view.findViewById(R.id.moveBackwardButton);
+        ImageButton moveForward = view.findViewById(R.id.moveForwardButton);
+        ImageButton delete = view.findViewById(R.id.deleteButton);
+        ImageButton edit = view.findViewById(R.id.editButton);
+
+        if (issue.getProgressID() == 1) {
+            moveBackward.setVisibility(View.GONE);
+        } else {
+            moveBackward.setOnClickListener(v -> {
+                Log.d(TAG, "Backward elem : " + issue);
+                issueViewModel.updateProgress(issue, issue.getProgressID() - 1);
+                issue.setProgressID(issue.getProgressID() - 1);
+            });
+        }
+
+        if (issue.getProgressID() == 3) {
+            moveForward.setVisibility(View.GONE);
+        } else {
+            moveForward.setOnClickListener(v -> {
+                Log.d(TAG, "Forward elem : " + issue);
+                issueViewModel.updateProgress(issue, issue.getProgressID() + 1);
+                issue.setProgressID(issue.getProgressID() + 1);
+            });
+        }
+
+        delete.setOnClickListener(v -> {
+            Log.d(TAG, "Delete elem : " + issue);
+            issueViewModel.delete(issue);
+            this.remove(issue);
+//            issues.remove(issue);
+        });
+        edit.setOnClickListener(v -> {
+            Log.d(TAG, "Edit elem : " + issue);
+        });
+
+        //endregion
+        //endregion
 
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
         SinglePlayVideoView videoPreview = view.findViewById(R.id.videoPreview);
@@ -250,8 +293,9 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 videoPreview.setOnPreparedListener(mediaPlayer -> {
                     // hide the place holder
                     placeholder.setVisibility(View.INVISIBLE);
+                    mediaController.hide();
                 });
-                videoPreview.start();
+                videoPreview.seekTo(200);
                 slideDown(title);
 
                 //Prevent media player from displaying when we don't want it to

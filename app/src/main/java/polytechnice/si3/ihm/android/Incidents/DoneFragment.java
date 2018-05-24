@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class DoneFragment extends Fragment {
 
     private static final String PROGRESS_TO_DISPLAY = "done";
+    private static final String TAG = "DoneFragment";
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -58,7 +60,8 @@ public class DoneFragment extends Fragment {
         GridView gridView = getActivity().findViewById(R.id.done_gridView);
         CustomViewPager viewPager = getActivity().findViewById(R.id.container);
         IssueViewModel ivm = ViewModelProviders.of(this).get(IssueViewModel.class);
-        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>(), viewPager);
+
+        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>(), viewPager, ivm);
 
         int progress = getArguments().getInt(PROGRESS_TO_DISPLAY);
         LiveData<List<Issue>> liveIssues = ivm.getAll();
@@ -66,6 +69,7 @@ public class DoneFragment extends Fragment {
         liveIssues.observeForever(issueList -> {
             if (issueList == null || issueList.isEmpty()) return;
 
+            Log.d(TAG, "Refresh list");
             List<Issue> collect = issueList.stream().filter(issue -> issue.getProgressID() == progress).collect(Collectors.toList());
 
             checkPermission(collect);
