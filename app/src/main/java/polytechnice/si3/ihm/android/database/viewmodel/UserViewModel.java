@@ -14,15 +14,6 @@ import polytechnice.si3.ihm.android.database.repository.UserRepository;
 public class UserViewModel extends AndroidViewModel {
 
     private User loggedIn;
-
-    public void logIn(User user) {
-        loggedIn = user;
-    }
-
-    public Optional<User> getLoggedIn() {
-        return Optional.ofNullable(loggedIn);
-    }
-
     private UserRepository userRepository;
     private LiveData<List<User>> users;
 
@@ -30,6 +21,14 @@ public class UserViewModel extends AndroidViewModel {
         super(application);
         userRepository = new UserRepository(application);
         users = userRepository.getAll();
+    }
+
+    public void logIn(User user) {
+        loggedIn = user;
+    }
+
+    public Optional<User> getLoggedIn() {
+        return Optional.ofNullable(loggedIn);
     }
 
     public LiveData<List<User>> getAll() {

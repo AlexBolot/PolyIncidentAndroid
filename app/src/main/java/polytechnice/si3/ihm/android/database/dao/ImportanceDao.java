@@ -13,7 +13,7 @@ import polytechnice.si3.ihm.android.database.model.Importance;
 @Dao
 public interface ImportanceDao {
     @Query("SELECT * FROM importance")
-    LiveData<List<Importance >> getAll();
+    LiveData<List<Importance>> getAll();
 
     @Query("SELECT * FROM importance WHERE id LIKE :id")
     Importance getByID(int id);

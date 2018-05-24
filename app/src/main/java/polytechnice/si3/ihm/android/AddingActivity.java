@@ -38,7 +38,6 @@ import polytechnice.si3.ihm.android.database.viewmodel.ImportanceViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
-import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class AddingActivity extends AppCompatActivity {
@@ -60,7 +59,7 @@ public class AddingActivity extends AppCompatActivity {
         findViewById(R.id.btn_add_pic).setOnClickListener(view -> getImageFromAlbum());
 
         //TODO : this is temporary
-        findViewById(R.id.btn_add_pos).setOnClickListener(view-> startActivity(new Intent(this, MapsActivity.class)));
+        findViewById(R.id.btn_add_pos).setOnClickListener(view -> startActivity(new Intent(this, MapsActivity.class)));
 
         findViewById(R.id.btn_add_issue).setOnClickListener(view -> addIssue());
 
@@ -70,12 +69,10 @@ public class AddingActivity extends AppCompatActivity {
 
         txtPhoneNumber = findViewById(R.id.phoneNumber);
 
-        pickContact.setOnClickListener(new View.OnClickListener()
-        {
+        pickContact.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                Intent pickContact =  new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            public void onClick(View v) {
+                Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
                 startActivityForResult(pickContact, 1);
             }
         });
@@ -244,9 +241,9 @@ public class AddingActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-                Cursor cursor = null;
+            Cursor cursor = null;
             try {
-                String phoneNo = null ;
+                String phoneNo = null;
                 String name = null;
                 // getData() avec le content uri du contact selectionne
                 Uri contactUri = data.getData();
@@ -256,12 +253,11 @@ public class AddingActivity extends AppCompatActivity {
                 int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 phoneNo = cursor.getString(phoneIndex);
                 txtPhoneNumber.setText(phoneNo);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        }
-        else if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             Uri selectedImage = data.getData();
 
             selectedPath = selectedImage.toString();

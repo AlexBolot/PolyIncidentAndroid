@@ -23,6 +23,7 @@ import polytechnice.si3.ihm.android.CustomViewPager;
 import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.database.model.Issue;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
+import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -60,7 +61,8 @@ public class DoingFragment extends Fragment {
         CustomViewPager viewPager = getActivity().findViewById(R.id.container);
         GridView gridView = getActivity().findViewById(R.id.doing_gridView);
         IssueViewModel ivm = ViewModelProviders.of(this).get(IssueViewModel.class);
-        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>(), viewPager, ivm);
+        UserViewModel uvm = ViewModelProviders.of(this).get(UserViewModel.class);
+        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>(), viewPager, ivm, uvm);
 
         int progress = getArguments().getInt(PROGRESS_TO_DISPLAY);
         LiveData<List<Issue>> liveIssues = ivm.getAll();
