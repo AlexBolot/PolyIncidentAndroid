@@ -44,6 +44,7 @@ public class AddingActivity extends AppCompatActivity {
 
     private String selectedPath = "";
     private EditText txtPhoneNumber;
+    private User userConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,8 @@ public class AddingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_adding);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        this.userConnected = new User(getIntent());
 
         int loggedIn = getIntent().getIntExtra("LoggedIn", 0);
         UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
@@ -68,6 +71,7 @@ public class AddingActivity extends AppCompatActivity {
         Button pickContact = findViewById(R.id.pickContact);
 
         txtPhoneNumber = findViewById(R.id.phoneNumber);
+        txtPhoneNumber.setText(userConnected.getPhoneNumber());
 
         pickContact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,12 +102,6 @@ public class AddingActivity extends AppCompatActivity {
         User assignee = (User) ddlAssignee.getSelectedItem();
         String phoneNumber = txtPhoneNumber.getText().toString().trim();
 
-        if (txtPhoneNumber.getText().toString().trim().isEmpty()) {
-            phoneNumber = assignee.getPhoneNumber();
-        }
-
-        String finalPhoneNumber = phoneNumber;
-
         userViewModel.getLoggedIn().ifPresent(currentUser -> {
             int assigneeID = assignee.getId();
             int creatorID = currentUser.getId();
@@ -124,7 +122,7 @@ public class AddingActivity extends AppCompatActivity {
                     categoryID,
                     progressID,
                     importanceID,
-                    finalPhoneNumber);
+                    phoneNumber);
 
             issueViewModel.insert(issue);
 

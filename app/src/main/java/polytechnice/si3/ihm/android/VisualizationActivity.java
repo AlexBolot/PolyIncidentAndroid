@@ -163,14 +163,13 @@ public class VisualizationActivity extends AppCompatActivity {
         FloatingActionButton btnAdd = findViewById(R.id.float_add);
         btnAdd.setOnClickListener(view -> {
             Intent addView = new Intent(this, AddingActivity.class);
-            userViewModel.getLoggedIn().ifPresent(user -> addView.putExtra("LoggedIn", user.getId()));
+            userConnected.feedIntent(addView);
             startActivity(addView);
         });
 
         FloatingActionButton btnProfile = findViewById(R.id.float_profile);
         btnProfile.setOnClickListener(view -> {
             Intent profileView = new Intent(this, ProfileActivity.class);
-            userViewModel.getLoggedIn().ifPresent(user -> profileView.putExtra("Logged in", user.getId()));
             startActivity(profileView);
         });
     }
