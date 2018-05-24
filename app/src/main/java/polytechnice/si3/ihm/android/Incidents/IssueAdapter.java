@@ -127,7 +127,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     if (totalDx < 50)
                         swippedDesc.animate().x(0).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                     Log.d(TAG + "_swipeMenu", "Swipe stopped");
-                    if (Math.abs(event.getX() - xStart) < 20) {
+                    if (Math.abs(event.getX() - xStart) < 30) {
                         Log.d(TAG + "_swipeMenu", "Just clicked on desc");
                         if (swippedDesc == v && !canBeClic) {
                             Log.d(TAG + "_swipeMenu", "Reset the swippedDesc");
@@ -145,7 +145,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     return false;
                 } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     viewPager.setPagingEnabled(false);
-                    if (swippedDesc != null && swippedDesc != v || !canBeClic)
+                    if (swippedDesc != null && swippedDesc != v)
                         swippedDesc.animate().x(0)
                                 .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                     xStart = event.getX();
@@ -158,10 +158,8 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 }
                 //if this is a move, we do the translation
                 else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (canBeClic && (totalDx > 50 || totalDy > 1)) {
+                    if (canBeClic && (totalDx > 50 || totalDy > 2))
                         canBeClic = false;
-                        viewPager.setPagingEnabled(true);
-                    }
                     float dx = event.getX() - xStart;
                     Log.d(TAG + "_swipeMenu", "Moved, swipe ?");
                     totalDx += dx;

@@ -170,7 +170,7 @@ public class VisualizationActivity extends AppCompatActivity {
         FloatingActionButton btnProfile = findViewById(R.id.float_profile);
         btnProfile.setOnClickListener(view -> {
             Intent profileView = new Intent(this, ProfileActivity.class);
-            userViewModel.getLoggedIn().ifPresent(user -> profileView.putExtra("Logged in", user.getId()));
+            userConnected.feedIntent(profileView);
             startActivity(profileView);
         });
     }
