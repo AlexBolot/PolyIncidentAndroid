@@ -46,7 +46,6 @@ public class IssueDetailsView extends AppCompatActivity {
         Progress progress = progressViewModel.getByID(issue.getProgressID()).orElse(null);
         //endregion
 
-
         TextView creatorT = findViewById(R.id.creator);
         creatorT.setText(creator != null ? creator.getName() : "Créateur inconnu");
 
