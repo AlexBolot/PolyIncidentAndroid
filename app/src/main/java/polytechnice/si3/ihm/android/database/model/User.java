@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.Intent;
 
 import java.util.Objects;
 
@@ -59,9 +60,13 @@ public class User {
         this.name = name;
     }
 
-    public String getPhoneNumber() { return this.phoneNumber; }
+    public String getPhoneNumber() {
+        return this.phoneNumber;
+    }
 
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     @Override
     public String toString() {
@@ -82,5 +87,12 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id, admin, name, phoneNumber);
+    }
+
+    public void feedIntent(Intent intent) {
+        intent.putExtra("id", this.id);
+        intent.putExtra("name", this.name);
+        intent.putExtra("isAdmin", this.isAdmin());
+        intent.putExtra("phoneNumber", this.phoneNumber);
     }
 }

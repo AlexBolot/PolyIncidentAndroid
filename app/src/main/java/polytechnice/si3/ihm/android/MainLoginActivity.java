@@ -1,5 +1,6 @@
 package polytechnice.si3.ihm.android;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,18 +11,31 @@ import android.widget.Button;
 
 import java.util.List;
 
+import polytechnice.si3.ihm.android.database.model.User;
+import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
+
 public class MainLoginActivity extends AppCompatActivity {
 
     private static String TAG = "MainLoginActivity";
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+
+
         Button connexionButton = findViewById(R.id.connexionButton);
         connexionButton.setOnClickListener(v -> {
-            this.startActivity(new Intent());
+            User connectedUser = getConnectedUser();
+
+            if (connectedUser != null) {
+                Intent intent = new Intent(this, VisualizationActivity.class);
+                connectedUser.feedIntent(intent);
+                this.startActivity(intent);
+            }
         });
 
     }
@@ -47,5 +61,9 @@ public class MainLoginActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
+    }
+
+    public User getConnectedUser() {
+        return userViewModel.getLoggedIn().orElse(new User(true,"2", "222"));
     }
 }
