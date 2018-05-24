@@ -47,8 +47,7 @@ public class IssueViewModel extends AndroidViewModel {
      * @param newProgressID ID of the new progress of the issue
      */
     public void updateProgress(Issue issue, int newProgressID) {
-        issue.setProgressID(newProgressID);
-        update(issue);
+        issueRepository.updateProgress(newProgressID, issue);
     }
 
     /**

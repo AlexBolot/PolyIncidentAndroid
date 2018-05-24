@@ -2,6 +2,7 @@ package polytechnice.si3.ihm.android.database.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
@@ -28,8 +29,13 @@ public class ProgressRepository {
         return progresses;
     }
 
-    public LiveData<Progress> getByLabel(String label){
-        return progressDao.getByLabel(label);
+    public LiveData<Progress> getByID(int id) {
+
+        MediatorLiveData<Progress> progress = new MediatorLiveData<>();
+
+        new getByID(progress).execute(id);
+
+        return progress;
     }
 
     public void insert(Progress... categories) {
@@ -47,6 +53,25 @@ public class ProgressRepository {
     //----------------------------------------------------//
     //-------------------- AsyncTasks --------------------//
     //----------------------------------------------------//
+
+    private static class getByID extends AsyncTask<Integer, Void, LiveData<Progress>> {
+
+        private MediatorLiveData<Progress> progress;
+
+        getByID(MediatorLiveData<Progress> progress) {
+            this.progress = progress;
+        }
+
+        @Override
+        protected LiveData<Progress> doInBackground(Integer... integers) {
+            return progressDao.getByID(integers[0]);
+        }
+
+        @Override
+        protected void onPostExecute(LiveData<Progress> progress) {
+            progress.observeForever(p -> this.progress.setValue(p));
+        }
+    }
 
     private static class insertAsyncTask extends AsyncTask<Progress, Void, Void> {
         @Override

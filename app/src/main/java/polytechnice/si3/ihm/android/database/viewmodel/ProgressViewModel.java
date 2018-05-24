@@ -25,6 +25,10 @@ public class ProgressViewModel extends AndroidViewModel {
         return progresses;
     }
 
+    public LiveData<Progress> getByID(int id) {
+        return progressRepository.getByID(id);
+    }
+
     public void insert(Progress... progresses) {
         progressRepository.insert(progresses);
     }

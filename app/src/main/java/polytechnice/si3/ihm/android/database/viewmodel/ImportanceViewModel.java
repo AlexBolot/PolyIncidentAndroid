@@ -25,6 +25,10 @@ public class ImportanceViewModel extends AndroidViewModel {
         return importances;
     }
 
+    public LiveData<Importance> getByID(int id) {
+        return importanceRepository.getByID(id);
+    }
+
     public void insert(Importance... importances) {
         importanceRepository.insert(importances);
     }

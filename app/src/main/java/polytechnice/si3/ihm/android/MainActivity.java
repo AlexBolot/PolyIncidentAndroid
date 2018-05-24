@@ -18,6 +18,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import polytechnice.si3.ihm.android.Incidents.DoingFragment;
 import polytechnice.si3.ihm.android.Incidents.DoneFragment;
@@ -142,7 +143,11 @@ public class MainActivity extends AppCompatActivity {
         issueViewModel.getAll().observeForever(this::print);
         categoryViewModel.getAll().observeForever(this::print);
         importanceViewModel.getAll().observeForever(this::print);
-        progressViewModel.getAll().observeForever(this::print);
+        progressViewModel.getAll().observeForever(progressList -> {
+            if (progressList != null && !progressList.isEmpty()) {
+                Log.i(TAG, progressList.stream().map(progress -> progress.getLabel() + "-" + progress.getId()).collect(Collectors.toList()).toString());
+            }
+        });
 
         //endregion
 
