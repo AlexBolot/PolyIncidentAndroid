@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
                 new Importance("Forte"));
 
         progressViewModel.insert(
-                new Progress("TODO"),
-                new Progress("DOING"),
-                new Progress("DONE"));
+                new Progress("En cours"),
+                new Progress("En cours de traitement"),
+                new Progress("Traité"));
 
 
         //Get all users
