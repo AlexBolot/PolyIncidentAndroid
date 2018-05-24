@@ -127,7 +127,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     if (totalDx < 50)
                         swippedDesc.animate().x(0).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                     Log.d(TAG + "_swipeMenu", "Swipe stopped");
-                    if (Math.abs(event.getX() - xStart) < 10) {
+                    if (Math.abs(event.getX() - xStart) < 20) {
                         Log.d(TAG + "_swipeMenu", "Just clicked on desc");
                         if (swippedDesc == v && !canBeClic) {
                             Log.d(TAG + "_swipeMenu", "Reset the swippedDesc");
@@ -145,7 +145,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     return false;
                 } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     viewPager.setPagingEnabled(false);
-                    if (swippedDesc != null && swippedDesc != v)
+                    if (swippedDesc != null && swippedDesc != v || !canBeClic)
                         swippedDesc.animate().x(0)
                                 .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
                     xStart = event.getX();
@@ -158,8 +158,10 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 }
                 //if this is a move, we do the translation
                 else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (canBeClic && (totalDx > 50 || totalDy > 2))
+                    if (canBeClic && (totalDx > 50 || totalDy > 1)) {
                         canBeClic = false;
+                        viewPager.setPagingEnabled(true);
+                    }
                     float dx = event.getX() - xStart;
                     Log.d(TAG + "_swipeMenu", "Moved, swipe ?");
                     totalDx += dx;
@@ -305,7 +307,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 videoPreview.setOnPreparedListener(mediaPlayer -> {
                     // hide the place holder
                     placeholder.setVisibility(View.INVISIBLE);
-//                    mediaController.hide();
+                    mediaController.hide();
                 });
                 videoPreview.seekTo(200);
                 slideDown(title);

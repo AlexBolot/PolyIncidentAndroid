@@ -133,7 +133,7 @@ public class AddingActivity extends AppCompatActivity {
 
         Uri uri = Uri.parse("smsto:" + phoneNumber);
         Intent sendIncidentIntent = new Intent(Intent.ACTION_SENDTO, uri);
-        sendIncidentIntent.putExtra("sms_body", "Votre numéro a été ajouté comme contact sur un nouvel incident de PolyIncident");
+        sendIncidentIntent.putExtra("sms_body", "Votre numéro a été ajouté comme contact d'urgence sur un nouvel incident de PolyIncident");
         startActivity(sendIncidentIntent);
     }
 

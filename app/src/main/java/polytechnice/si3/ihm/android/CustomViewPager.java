@@ -32,7 +32,7 @@ public class CustomViewPager extends ViewPager {
                 xStart = event.getX();
                 yStart = event.getY();
             } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                if (distance(xStart, event.getX(), yStart, event.getY()) > 30)
+                if (distance(xStart, event.getX(), yStart, event.getY()) > 20)
                     hideMediaControllers();
             }
             return super.onTouchEvent(event);
@@ -49,7 +49,7 @@ public class CustomViewPager extends ViewPager {
                 xStart = event.getX();
                 yStart = event.getY();
             } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                if (distance(xStart, event.getX(), yStart, event.getY()) > 30)
+                if (distance(xStart, event.getX(), yStart, event.getY()) > 20)
                     hideMediaControllers();
             }
             return super.onInterceptTouchEvent(event);
