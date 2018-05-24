@@ -2,6 +2,8 @@ package polytechnice.si3.ihm.android;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.VideoView;
 
 /**
@@ -13,6 +15,10 @@ import android.widget.VideoView;
 public class SinglePlayVideoView extends VideoView {
 
     private PlayPauseListener mListener;
+    private ImageView placeHolderPlay;
+    private MediaController mediaControllerWaiting;
+    private MediaController mediaController;
+    private boolean isMediaControllerSet = false;
 
     public SinglePlayVideoView(Context context) {
         super(context);
@@ -30,9 +36,30 @@ public class SinglePlayVideoView extends VideoView {
         mListener = listener;
     }
 
+    public void setPlaceHolderPlay(ImageView placeHolderPlay) {
+        this.placeHolderPlay = placeHolderPlay;
+        placeHolderPlay.setOnClickListener(v -> {
+            this.start();
+            if (!isMediaControllerSet) {
+                this.mediaController = mediaControllerWaiting;
+                super.setMediaController(mediaController);
+            }
+        });
+    }
+
+    @Override
+    public void setMediaController(MediaController mediaController) {
+        mediaControllerWaiting = mediaController;
+    }
+
     @Override
     public void pause() {
         super.pause();
+        if (isMediaControllerSet && mediaController.isShowing()) mediaController.hide();
+        if (placeHolderPlay != null) {
+            placeHolderPlay.setVisibility(VISIBLE);
+            if (isMediaControllerSet && mediaController.isShowing()) mediaController.hide();
+        }
         if (mListener != null) {
             mListener.onPause();
         }
@@ -41,6 +68,10 @@ public class SinglePlayVideoView extends VideoView {
     @Override
     public void start() {
         super.start();
+        if (isMediaControllerSet && mediaController.isShowing()) mediaController.hide();
+        if (placeHolderPlay != null) {
+            placeHolderPlay.setVisibility(GONE);
+        }
         if (mListener != null) {
             mListener.onPlay();
         }

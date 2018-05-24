@@ -62,6 +62,7 @@ public class CustomViewPager extends ViewPager {
     }
 
     private void hideMediaControllers() {
+        Log.d(TAG, "Hide media controllers");
         for (MediaController mediaController : mediaControllers) {
             if (mediaController.isShowing()) mediaController.hide();
         }

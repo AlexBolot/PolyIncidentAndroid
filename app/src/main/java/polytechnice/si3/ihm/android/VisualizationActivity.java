@@ -146,6 +146,7 @@ public class VisualizationActivity extends AppCompatActivity {
         FloatingActionButton btnProfile = findViewById(R.id.float_profile);
         btnProfile.setOnClickListener(view -> {
             Intent profileView = new Intent(this, ProfileActivity.class);
+            userConnected.feedIntent(profileView);
             startActivity(profileView);
         });
     }

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +32,7 @@ public class MainLoginActivity extends AppCompatActivity {
     private static String TAG = "MainLoginActivity";
     private UserViewModel userViewModel;
 
-    private static boolean mustInitDB = true;
+    private static boolean mustInitDB = false;
 
     //region Database
     private void setupDB(UserViewModel userViewModel, IssueViewModel issueViewModel,
@@ -172,7 +173,10 @@ public class MainLoginActivity extends AppCompatActivity {
         EditText password = findViewById(R.id.password);
         Log.d(TAG + "_login", "Try to log : {" + login.getText().toString() + ", "
                 + password.getText().toString() + "}");
-        return userViewModel.getByNameAndPhoneNumber(login.getText().toString(),
+        User tryToConnect = userViewModel.getByNameAndPhoneNumber(login.getText().toString(),
                 password.getText().toString()).orElse(userViewModel.getByNameAndPhoneNumber("Admin1", "0621256333").orElse(null));
+        if (tryToConnect == null)
+            Toast.makeText(this, "Identifiants incorrects", Toast.LENGTH_SHORT).show();
+        return tryToConnect;
     }
 }
