@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import polytechnice.si3.ihm.android.database.model.Category;
 import polytechnice.si3.ihm.android.database.repository.CategoryRepository;
@@ -25,7 +26,7 @@ public class CategoryViewModel extends AndroidViewModel {
         return categories;
     }
 
-    public LiveData<Category> getByID(int id){
+    public Optional<Category> getByID(int id){
         return categoryRepository.getByID(id);
     }
 

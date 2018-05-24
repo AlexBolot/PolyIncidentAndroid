@@ -2,10 +2,11 @@ package polytechnice.si3.ihm.android.database.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import polytechnice.si3.ihm.android.database.GlobalDB;
 import polytechnice.si3.ihm.android.database.dao.CategoryDao;
@@ -29,12 +30,14 @@ public class CategoryRepository {
         return categories;
     }
 
-    public LiveData<Category> getByID(int id) {
-        MediatorLiveData<Category> category = new MediatorLiveData<>();
+    public Optional<Category> getByID(int id) {
+        try {
+            return Optional.ofNullable(new getByID().execute(id).get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
-        new getByID(category).execute(id);
-
-        return category;
+        return Optional.empty();
     }
 
     public void insert(Category... categories) {
@@ -49,26 +52,14 @@ public class CategoryRepository {
         new deleteAllAsyncTask().execute();
     }
 
-
     //----------------------------------------------------//
     //-------------------- AsyncTasks --------------------//
     //----------------------------------------------------//
 
-    private static class getByID extends AsyncTask<Integer, Void, LiveData<Category>> {
-        private MediatorLiveData<Category> category;
-
-        getByID(MediatorLiveData<Category> category) {
-            this.category = category;
-        }
-
+    private static class getByID extends AsyncTask<Integer, Void, Category> {
         @Override
-        protected LiveData<Category> doInBackground(Integer... integers) {
+        protected Category doInBackground(Integer... integers) {
             return categoryDao.getByID(integers[0]);
-        }
-
-        @Override
-        protected void onPostExecute(LiveData<Category> category) {
-            category.observeForever(p -> this.category.setValue(p));
         }
     }
 

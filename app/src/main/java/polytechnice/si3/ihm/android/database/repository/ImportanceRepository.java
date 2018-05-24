@@ -2,10 +2,11 @@ package polytechnice.si3.ihm.android.database.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import polytechnice.si3.ihm.android.database.GlobalDB;
 import polytechnice.si3.ihm.android.database.dao.ImportanceDao;
@@ -29,13 +30,14 @@ public class ImportanceRepository {
         return importances;
     }
 
-    public LiveData<Importance> getByID(int id) {
+    public Optional<Importance> getByID(int id) {
+        try {
+            return Optional.ofNullable(new getByID().execute(id).get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
-        MediatorLiveData<Importance> importance = new MediatorLiveData<>();
-
-        new getByID(importance).execute(id);
-
-        return importance;
+        return Optional.empty();
     }
 
     public void insert(Importance... importances) {
@@ -54,21 +56,10 @@ public class ImportanceRepository {
     //-------------------- AsyncTasks --------------------//
     //----------------------------------------------------//
 
-    private static class getByID extends AsyncTask<Integer, Void, LiveData<Importance>> {
-        private MediatorLiveData<Importance> importance;
-
-        getByID(MediatorLiveData<Importance> importance) {
-            this.importance = importance;
-        }
-
+    private static class getByID extends AsyncTask<Integer, Void, Importance> {
         @Override
-        protected LiveData<Importance> doInBackground(Integer... integers) {
+        protected Importance doInBackground(Integer... integers) {
             return importanceDao.getByID(integers[0]);
-        }
-
-        @Override
-        protected void onPostExecute(LiveData<Importance> importance) {
-            importance.observeForever(p -> this.importance.setValue(p));
         }
     }
 

@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import polytechnice.si3.ihm.android.database.model.Importance;
 import polytechnice.si3.ihm.android.database.repository.ImportanceRepository;
@@ -25,7 +26,7 @@ public class ImportanceViewModel extends AndroidViewModel {
         return importances;
     }
 
-    public LiveData<Importance> getByID(int id) {
+    public Optional<Importance> getByID(int id) {
         return importanceRepository.getByID(id);
     }
 

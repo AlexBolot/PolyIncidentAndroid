@@ -2,10 +2,11 @@ package polytechnice.si3.ihm.android.database.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import polytechnice.si3.ihm.android.database.GlobalDB;
 import polytechnice.si3.ihm.android.database.dao.ProgressDao;
@@ -29,13 +30,15 @@ public class ProgressRepository {
         return progresses;
     }
 
-    public LiveData<Progress> getByID(int id) {
+    public Optional<Progress> getByID(int id) {
 
-        MediatorLiveData<Progress> progress = new MediatorLiveData<>();
+        try {
+           return Optional.ofNullable(new getByID().execute(id).get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
-        new getByID(progress).execute(id);
-
-        return progress;
+        return Optional.empty();
     }
 
     public void insert(Progress... categories) {
@@ -54,22 +57,10 @@ public class ProgressRepository {
     //-------------------- AsyncTasks --------------------//
     //----------------------------------------------------//
 
-    private static class getByID extends AsyncTask<Integer, Void, LiveData<Progress>> {
-
-        private MediatorLiveData<Progress> progress;
-
-        getByID(MediatorLiveData<Progress> progress) {
-            this.progress = progress;
-        }
-
+    private static class getByID extends AsyncTask<Integer, Void, Progress> {
         @Override
-        protected LiveData<Progress> doInBackground(Integer... integers) {
+        protected Progress doInBackground(Integer... integers) {
             return progressDao.getByID(integers[0]);
-        }
-
-        @Override
-        protected void onPostExecute(LiveData<Progress> progress) {
-            progress.observeForever(p -> this.progress.setValue(p));
         }
     }
 

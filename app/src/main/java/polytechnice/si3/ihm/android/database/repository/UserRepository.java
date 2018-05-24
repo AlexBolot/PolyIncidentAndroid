@@ -40,6 +40,16 @@ public class UserRepository {
         return Optional.empty();
     }
 
+    public Optional<User> getByNameAndPhoneNumber(String name, String phoneNumber) {
+        try {
+            return Optional.ofNullable(new getByNameAndPhoneNumberAsyncTask(name, phoneNumber).execute().get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
     public void insert(User... users) {
         new insertAsyncTask().execute(users);
     }
@@ -61,6 +71,22 @@ public class UserRepository {
         @Override
         protected User doInBackground(Integer... integers) {
             return userDao.getByID(integers[0]);
+        }
+    }
+
+    private static class getByNameAndPhoneNumberAsyncTask extends AsyncTask<Void, Void, User> {
+
+        private String name;
+        private String phoneNumber;
+
+        getByNameAndPhoneNumberAsyncTask(String name, String phoneNumber) {
+            this.name = name;
+            this.phoneNumber = phoneNumber;
+        }
+
+        @Override
+        protected User doInBackground(Void... voids) {
+            return userDao.getByNameAndPhoneNumber(name, phoneNumber);
         }
     }
 

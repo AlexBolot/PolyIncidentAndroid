@@ -16,10 +16,7 @@ public interface CategoryDao {
     LiveData<List<Category>> getAll();
 
     @Query("SELECT * FROM category WHERE id LIKE :id")
-    LiveData<Category> getByID(int id);
-
-    @Query("SELECT * FROM category WHERE label LIKE :label")
-    LiveData<Category> getByLabel(String label);
+    Category getByID(int id);
 
     @Insert
     void insert(Category... categories);

@@ -16,10 +16,7 @@ public interface ProgressDao {
     LiveData<List<Progress >> getAll();
 
     @Query("SELECT * FROM progress WHERE id LIKE :id")
-    LiveData<Progress> getByID(int id);
-
-    @Query("SELECT * FROM progress WHERE label LIKE :label")
-    LiveData<Progress> getByLabel(String label);
+    Progress getByID(int id);
 
     @Insert
     void insert(Progress... progresses);

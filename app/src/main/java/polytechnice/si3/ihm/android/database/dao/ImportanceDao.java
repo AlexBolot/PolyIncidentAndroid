@@ -16,10 +16,7 @@ public interface ImportanceDao {
     LiveData<List<Importance >> getAll();
 
     @Query("SELECT * FROM importance WHERE id LIKE :id")
-    LiveData<Importance> getByID(int id);
-
-    @Query("SELECT * FROM importance WHERE label LIKE :label")
-    LiveData<Importance> getByLabel(String label);
+    Importance getByID(int id);
 
     @Insert
     void insert(Importance... importances);

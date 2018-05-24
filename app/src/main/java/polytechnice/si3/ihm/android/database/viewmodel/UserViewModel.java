@@ -2,8 +2,6 @@ package polytechnice.si3.ihm.android.database.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
@@ -13,7 +11,7 @@ import java.util.Optional;
 import polytechnice.si3.ihm.android.database.model.User;
 import polytechnice.si3.ihm.android.database.repository.UserRepository;
 
-public class UserViewModel extends AndroidViewModel implements LifecycleOwner {
+public class UserViewModel extends AndroidViewModel {
 
     private User loggedIn;
 
@@ -42,6 +40,10 @@ public class UserViewModel extends AndroidViewModel implements LifecycleOwner {
         return userRepository.getByID(userID);
     }
 
+    public Optional<User> getByNameAndPhoneNumber(String name, String phoneNumber) {
+        return userRepository.getByNameAndPhoneNumber(name, phoneNumber);
+    }
+
     public void insert(User... users) {
         userRepository.insert(users);
     }
@@ -52,11 +54,5 @@ public class UserViewModel extends AndroidViewModel implements LifecycleOwner {
 
     public void deleteAll() {
         userRepository.deleteAll();
-    }
-
-    @NonNull
-    @Override
-    public Lifecycle getLifecycle() {
-        return null;
     }
 }

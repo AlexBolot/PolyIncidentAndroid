@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -84,21 +83,21 @@ public class VisualizationActivity extends AppCompatActivity {
                 issueViewModel.insert(
                         new Issue(userList.get(0).getId(), userList.get(1).getId(),
                                 "Je veux un raton laveur", "Il est trop mignon",
-                                "https://i.imgur.com/VVWVgxp.png", formatter.format(today).toString(),
+                                "https://i.imgur.com/VVWVgxp.png", formatter.format(today),
                                 1, 2, 2, "0621236433"),
                         new Issue(userList.get(1).getId(), userList.get(2).getId(),
                                 "Vase cassé", "Je balance pas, mais le vase est cassé",
-                                "https://i.imgur.com/URVyanB.png", formatter.format(today).toString(),
+                                "https://i.imgur.com/URVyanB.png", formatter.format(today),
                                 1, 3, 2, "0621236433"),
                         new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
                                 "On me suit", "Je me sens épié depuis quelques temps",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
-                                formatter.format(today).toString(),
+                                formatter.format(today),
                                 1, 1, 2, "0621236433"),
                         new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
                                 "On me suit", "J'ai faim.",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
-                                formatter.format(today).toString(),
+                                formatter.format(today),
                                 1, 1, 2, "0621236433")
                 );
             }

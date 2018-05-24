@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import polytechnice.si3.ihm.android.database.model.Progress;
 import polytechnice.si3.ihm.android.database.repository.ProgressRepository;
@@ -25,7 +26,7 @@ public class ProgressViewModel extends AndroidViewModel {
         return progresses;
     }
 
-    public LiveData<Progress> getByID(int id) {
+    public Optional<Progress> getByID(int id) {
         return progressRepository.getByID(id);
     }
 
