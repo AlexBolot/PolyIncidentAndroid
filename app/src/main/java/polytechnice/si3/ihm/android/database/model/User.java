@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.Intent;
+import android.os.Bundle;
 
 import java.util.Objects;
 
@@ -34,6 +35,20 @@ public class User {
         this.admin = admin;
         this.name = name;
         this.phoneNumber = phoneNumber;
+    }
+
+    public User(Intent intent) {
+        this.id = intent.getIntExtra("id", 0);
+        this.name = intent.getStringExtra("name");
+        this.admin = intent.getBooleanExtra("isAdmin", false);
+        this.phoneNumber = intent.getStringExtra("phoneNumber");
+    }
+
+    public User(Bundle args) {
+        this.id = args.getInt("id", 0);
+        this.name = args.getString("name", "");
+        this.admin = args.getBoolean("isAdmin", false);
+        this.phoneNumber = args.getString("phoneNumber", "");
     }
 
     public int getId() {
@@ -94,5 +109,13 @@ public class User {
         intent.putExtra("name", this.name);
         intent.putExtra("isAdmin", this.isAdmin());
         intent.putExtra("phoneNumber", this.phoneNumber);
+    }
+
+    public void feedArgs(Bundle args) {
+        args.putInt("id", this.id);
+        args.putString("name", this.name);
+        args.putBoolean("isAdmin", this.isAdmin());
+        args.putString("phoneNumber", this.phoneNumber);
+
     }
 }

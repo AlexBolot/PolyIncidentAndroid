@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import polytechnice.si3.ihm.android.CustomViewPager;
 import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.database.model.Issue;
+import polytechnice.si3.ihm.android.database.model.User;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
@@ -38,10 +39,11 @@ public class TodoFragment extends Fragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static TodoFragment newInstance(int progressToDisplay) {
+    public static TodoFragment newInstance(int progressToDisplay, User userConnected) {
         TodoFragment fragment = new TodoFragment();
         Bundle args = new Bundle();
         args.putInt(PROGRESS_TO_DISPLAY, progressToDisplay);
+        userConnected.feedArgs(args);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,8 +63,10 @@ public class TodoFragment extends Fragment {
         CustomViewPager viewPager = getActivity().findViewById(R.id.container);
         GridView gridView = getActivity().findViewById(R.id.todo_gridView);
         IssueViewModel ivm = ViewModelProviders.of(this).get(IssueViewModel.class);
-        UserViewModel uvm = ViewModelProviders.of(this).get(UserViewModel.class);
-        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>(), viewPager, ivm, uvm);
+
+        User userConnected = new User(getArguments());
+        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>(), viewPager, ivm, userConnected);
+
         int progress = getArguments().getInt(PROGRESS_TO_DISPLAY);
         LiveData<List<Issue>> liveIssues = ivm.getAll();
 

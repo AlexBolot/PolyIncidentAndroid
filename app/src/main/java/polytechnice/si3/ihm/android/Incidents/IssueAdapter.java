@@ -31,8 +31,8 @@ import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.SinglePlayVideoView;
 import polytechnice.si3.ihm.android.SinglePlayVideoView.PlayPauseListener;
 import polytechnice.si3.ihm.android.database.model.Issue;
+import polytechnice.si3.ihm.android.database.model.User;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
-import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 public class IssueAdapter extends ArrayAdapter<Issue> {
     private final static String TAG = "IssueAdapter";
@@ -51,14 +51,14 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
     private float totalDy;
 
     private CustomViewPager viewPager;
-    private UserViewModel userViewModel;
+    private User userConnected;
 
 
     public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues, CustomViewPager viewPager,
-                        IssueViewModel issueViewModel, UserViewModel userViewModel) {
+                        IssueViewModel issueViewModel, User userConnected) {
         super(context, 0, issues);
-        this.userViewModel = userViewModel;
-        Log.d("IncidentAdapter", "Create incident adapter with " + issues.toString());
+        this.userConnected = userConnected;
+        Log.d(TAG, "Create incident adapter with " + issues.toString());
         this.issues = issues;
         this.context = context;
         this.viewPager = viewPager;
@@ -68,10 +68,12 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
     @NonNull
     @Override
     public View getView(int index, @Nullable View view, @NonNull ViewGroup parent) {
-        if (view == null) view = LayoutInflater.from(context).inflate(R.layout.incident_item, null);
-
-        setUpView(view, index);
-
+        if (userConnected == null && view != null)
+            view.setVisibility(View.GONE);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.incident_item, null);
+            setUpView(view, index);
+        }
         return view;
     }
 
@@ -108,125 +110,126 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         }
 
         //region ===== Init the swiping action menu ====
-
-        //Listener for admin
-
         View adminsButton = view.findViewById(R.id.adminButtonsLayout);
+        if (userConnected.isAdmin()) {
+            //Listener for admin
 
-        //region ==== Swipe ====
-        description.setOnTouchListener((v, event) -> {
-            if (v == null)
-                return false;
+            //region ==== Swipe ====
+            description.setOnTouchListener((v, event) -> {
+                if (v == null)
+                    return false;
 
-            //if we up the touch, we determine if this is a clic or a swipe
-            if (event.getAction() == MotionEvent.ACTION_UP
-                    || event.getAction() == MotionEvent.ACTION_HOVER_EXIT
-                    || event.getAction() == MotionEvent.ACTION_CANCEL) {
-                viewPager.setPagingEnabled(true);
-                if (totalDx < 50)
-                    swippedDesc.animate().x(0).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
-                Log.d(TAG + "_swipeMenu", "Swipe stopped");
-                if (Math.abs(event.getX() - xStart) < 10) {
-                    Log.d(TAG + "_swipeMenu", "Just clicked on desc");
-                    if (swippedDesc == v && !canBeClic) {
-                        Log.d(TAG + "_swipeMenu", "Reset the swippedDesc");
+                //if we up the touch, we determine if this is a clic or a swipe
+                if (event.getAction() == MotionEvent.ACTION_UP
+                        || event.getAction() == MotionEvent.ACTION_HOVER_EXIT
+                        || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    viewPager.setPagingEnabled(true);
+                    if (totalDx < 50)
                         swippedDesc.animate().x(0).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
-                        return true;
-                    } else if (canBeClic) {
-                        //region ========== Clic handler ======
-                        Intent intent = new Intent(this.getContext(), IssueDetailsView.class);
-                        issue.feedIntent(intent);
-                        view.getContext().startActivity(intent);
-                        //endregion
+                    Log.d(TAG + "_swipeMenu", "Swipe stopped");
+                    if (Math.abs(event.getX() - xStart) < 10) {
+                        Log.d(TAG + "_swipeMenu", "Just clicked on desc");
+                        if (swippedDesc == v && !canBeClic) {
+                            Log.d(TAG + "_swipeMenu", "Reset the swippedDesc");
+                            swippedDesc.animate().x(0).setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                            return true;
+                        } else if (canBeClic) {
+                            //region ========== Clic handler ======
+                            Intent intent = new Intent(this.getContext(), IssueDetailsView.class);
+                            issue.feedIntent(intent);
+                            view.getContext().startActivity(intent);
+                            //endregion
+                        }
                     }
-                }
-                swippedDesc = null;
-                return false;
-            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                viewPager.setPagingEnabled(false);
-                if (swippedDesc != null && swippedDesc != v)
-                    swippedDesc.animate().x(0)
-                            .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
-                xStart = event.getX();
-                yStart = event.getY();
-                totalDx = 0;
-                totalDy = 0;
-                Log.d(TAG + "_swipeMenu", "x start : " + xStart);
-                swippedDesc = v;
-                canBeClic = true;
-            }
-            //if this is a move, we do the translation
-            else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                if (canBeClic && (totalDx > 50 || totalDy > 2))
-                    canBeClic = false;
-                float dx = event.getX() - xStart;
-                Log.d(TAG + "_swipeMenu", "Moved, swipe ?");
-                totalDx += dx;
-                totalDy += Math.abs(event.getY() - yStart);
-                //if we go to right
-                if (dx > 3 && v.getX() + dx <= adminsButton.getWidth()) {
-                    if (totalDx < 50) {
-                        v.animate().x(v.getX() + dx).setDuration(0).start();
-                        Log.d(TAG + "_swipeMenu", "swipe done, dx = " + dx);
-                    } else if (totalDx > 0) {
-                        v.animate().x(adminsButton.getWidth())
+                    swippedDesc = null;
+                    return false;
+                } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    viewPager.setPagingEnabled(false);
+                    if (swippedDesc != null && swippedDesc != v)
+                        swippedDesc.animate().x(0)
                                 .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                    xStart = event.getX();
+                    yStart = event.getY();
+                    totalDx = 0;
+                    totalDy = 0;
+                    Log.d(TAG + "_swipeMenu", "x start : " + xStart);
+                    swippedDesc = v;
+                    canBeClic = true;
+                }
+                //if this is a move, we do the translation
+                else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (canBeClic && (totalDx > 50 || totalDy > 2))
+                        canBeClic = false;
+                    float dx = event.getX() - xStart;
+                    Log.d(TAG + "_swipeMenu", "Moved, swipe ?");
+                    totalDx += dx;
+                    totalDy += Math.abs(event.getY() - yStart);
+                    //if we go to right
+                    if (dx > 3 && v.getX() + dx <= adminsButton.getWidth()) {
+                        if (totalDx < 50) {
+                            v.animate().x(v.getX() + dx).setDuration(0).start();
+                            Log.d(TAG + "_swipeMenu", "swipe done, dx = " + dx);
+                        } else if (totalDx > 0) {
+                            v.animate().x(adminsButton.getWidth())
+                                    .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                        }
+                    }
+                    //if we go to left
+                    else if (dx < -3 && v.getX() + dx >= 0) {
+                        if (v.getX() + dx >= 0 && totalDx < -20) {
+                            v.animate().x(v.getX() + dx).setDuration(0).start();
+                        } else {
+                            v.animate().x(0)
+                                    .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
+                        }
                     }
                 }
-                //if we go to left
-                else if (dx < -3 && v.getX() + dx >= 0) {
-                    if (v.getX() + dx >= 0 && totalDx < -20) {
-                        v.animate().x(v.getX() + dx).setDuration(0).start();
-                    } else {
-                        v.animate().x(0)
-                                .setDuration(500).setInterpolator(new DecelerateInterpolator()).start();
-                    }
-                }
+                return true;
+            });
+
+            //endregion
+
+            //region ==== Buttons ==
+            ImageButton moveBackward = view.findViewById(R.id.moveBackwardButton);
+            ImageButton moveForward = view.findViewById(R.id.moveForwardButton);
+            ImageButton delete = view.findViewById(R.id.deleteButton);
+            ImageButton edit = view.findViewById(R.id.editButton);
+
+            if (issue.getProgressID() == 1) {
+                moveBackward.setVisibility(View.GONE);
+            } else {
+                moveBackward.setOnClickListener(v -> {
+                    Log.d(TAG, "Backward elem : " + issue);
+                    issueViewModel.updateProgress(issue, issue.getProgressID() - 1);
+                    issue.setProgressID(issue.getProgressID() - 1);
+                });
             }
-            return true;
-        });
 
-        //endregion
+            if (issue.getProgressID() == 3) {
+                moveForward.setVisibility(View.GONE);
+            } else {
+                moveForward.setOnClickListener(v -> {
+                    Log.d(TAG, "Forward elem : " + issue);
+                    issueViewModel.updateProgress(issue, issue.getProgressID() + 1);
+                    issue.setProgressID(issue.getProgressID() + 1);
+                });
+            }
 
-        //region ==== Buttons ==
-        ImageButton moveBackward = view.findViewById(R.id.moveBackwardButton);
-        ImageButton moveForward = view.findViewById(R.id.moveForwardButton);
-        ImageButton delete = view.findViewById(R.id.deleteButton);
-        ImageButton edit = view.findViewById(R.id.editButton);
-
-        if (issue.getProgressID() == 1) {
-            moveBackward.setVisibility(View.GONE);
-        } else {
-            moveBackward.setOnClickListener(v -> {
-                Log.d(TAG, "Backward elem : " + issue);
-                issueViewModel.updateProgress(issue, issue.getProgressID() - 1);
-                issue.setProgressID(issue.getProgressID() - 1);
-            });
-        }
-
-        if (issue.getProgressID() == 3) {
-            moveForward.setVisibility(View.GONE);
-        } else {
-            moveForward.setOnClickListener(v -> {
-                Log.d(TAG, "Forward elem : " + issue);
-                issueViewModel.updateProgress(issue, issue.getProgressID() + 1);
-                issue.setProgressID(issue.getProgressID() + 1);
-            });
-        }
-
-        delete.setOnClickListener(v -> {
-            Log.d(TAG, "Delete elem : " + issue);
-            issueViewModel.delete(issue);
-            this.remove(issue);
+            delete.setOnClickListener(v -> {
+                Log.d(TAG, "Delete elem : " + issue);
+                issueViewModel.delete(issue);
+                this.remove(issue);
 //            issues.remove(issue);
-        });
-        edit.setOnClickListener(v -> {
-            Log.d(TAG, "Edit elem : " + issue);
-        });
+            });
+            edit.setOnClickListener(v -> {
+                Log.d(TAG, "Edit elem : " + issue);
+            });
 
+            //endregion
+        } else {
+            adminsButton.setVisibility(View.GONE);
+        }
         //endregion
-        //endregion
-
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
         SinglePlayVideoView videoPreview = view.findViewById(R.id.videoPreview);
 

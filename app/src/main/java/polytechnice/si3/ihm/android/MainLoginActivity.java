@@ -64,6 +64,7 @@ public class MainLoginActivity extends AppCompatActivity {
     }
 
     public User getConnectedUser() {
-        return userViewModel.getLoggedIn().orElse(new User(true, "2", "222"));
+        User userConnected = new User(false, "2", "222");
+        return userConnected;
     }
 }

@@ -41,9 +41,9 @@ public class IssueDetailsView extends AppCompatActivity {
 
         User creator = userViewModel.getByID(issue.getCreatorID()).orElse(null);
         User assignee = userViewModel.getByID(issue.getAssigneeID()).orElse(null);
-        Category category = categoryViewModel.getByID(issue.getCategoryID()).getValue();
-        Importance importance = importanceViewModel.getByID(issue.getImportanceID()).getValue();
-        Progress progress = progressViewModel.getByID(issue.getProgressID()).getValue();
+        Category category = categoryViewModel.getByID(issue.getCategoryID()).orElse(null);
+        Importance importance = importanceViewModel.getByID(issue.getImportanceID()).orElse(null);
+        Progress progress = progressViewModel.getByID(issue.getProgressID()).orElse(null);
         //endregion
 
 

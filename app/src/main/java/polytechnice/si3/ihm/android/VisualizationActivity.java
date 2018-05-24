@@ -37,6 +37,7 @@ public class VisualizationActivity extends AppCompatActivity {
 
     private static String TAG = "VisualizationActivity";
     private static boolean mustInitDB = false;
+    private User userConnected;
 
     //region Database
     private void setupDB(UserViewModel userViewModel, IssueViewModel issueViewModel,
@@ -111,8 +112,9 @@ public class VisualizationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visualisation);
 
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        userConnected = new User(getIntent());
+        Log.d(TAG + "_user_connected", userConnected.toString());
+
         // Create the adapter that will return a fragment for each of the three primary sections of the activity.
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -213,11 +215,11 @@ public class VisualizationActivity extends AppCompatActivity {
 
             switch (position) {
                 case 1:
-                    return TodoFragment.newInstance(position);
+                    return TodoFragment.newInstance(position, userConnected);
                 case 2:
-                    return DoingFragment.newInstance(position);
+                    return DoingFragment.newInstance(position, userConnected);
                 case 3:
-                    return DoneFragment.newInstance(position);
+                    return DoneFragment.newInstance(position, userConnected);
                 default:
                     return PlaceholderFragment.newInstance(position);
             }
