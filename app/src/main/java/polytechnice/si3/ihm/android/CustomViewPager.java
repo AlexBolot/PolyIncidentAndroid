@@ -16,6 +16,9 @@ public class CustomViewPager extends ViewPager {
     private boolean enabled;
     private List<MediaController> mediaControllers;
 
+    private double xStart;
+    private double yStart;
+
     public CustomViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.enabled = true;
@@ -25,8 +28,13 @@ public class CustomViewPager extends ViewPager {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (this.enabled) {
-            if (event.getAction() == MotionEvent.ACTION_MOVE)
-                hideMediaControllers();
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                xStart = event.getX();
+                yStart = event.getY();
+            } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                if (distance(xStart, event.getX(), yStart, event.getY()) > 30)
+                    hideMediaControllers();
+            }
             return super.onTouchEvent(event);
         } else {
             Log.d(TAG, "event received, but view disabled");
@@ -37,11 +45,20 @@ public class CustomViewPager extends ViewPager {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         if (this.enabled) {
-            if (event.getAction() == MotionEvent.ACTION_MOVE)
-                hideMediaControllers();
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                xStart = event.getX();
+                yStart = event.getY();
+            } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                if (distance(xStart, event.getX(), yStart, event.getY()) > 30)
+                    hideMediaControllers();
+            }
             return super.onInterceptTouchEvent(event);
         }
         return false;
+    }
+
+    private double distance(double xStart, float xEnd, double yStart, float yEnd) {
+        return Math.sqrt(Math.pow(xEnd - xStart, 2) + Math.pow(yEnd - yStart, 2));
     }
 
     private void hideMediaControllers() {

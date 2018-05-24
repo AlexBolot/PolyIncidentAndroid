@@ -109,7 +109,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
             description.setText(issue.getDescription());
         }
 
-        //region ===== Init the swiping action menu ====
+        //region ===== Init action depending on if you're admin or not ====
         View adminsButton = view.findViewById(R.id.adminButtonsLayout);
         if (userConnected.isAdmin()) {
             //Listener for admin
@@ -228,6 +228,11 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
             //endregion
         } else {
             adminsButton.setVisibility(View.GONE);
+            description.setOnClickListener(v -> {
+                Intent intent = new Intent(this.getContext(), IssueDetailsView.class);
+                issue.feedIntent(intent);
+                view.getContext().startActivity(intent);
+            });
         }
         //endregion
         ImageView imageView = view.findViewById(R.id.inc_thumbnail);
@@ -300,7 +305,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 videoPreview.setOnPreparedListener(mediaPlayer -> {
                     // hide the place holder
                     placeholder.setVisibility(View.INVISIBLE);
-                    mediaController.hide();
+//                    mediaController.hide();
                 });
                 videoPreview.seekTo(200);
                 slideDown(title);
