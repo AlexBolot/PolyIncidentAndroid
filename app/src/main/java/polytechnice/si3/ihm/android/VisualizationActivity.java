@@ -139,8 +139,14 @@ public class VisualizationActivity extends AppCompatActivity {
         FloatingActionButton btnAdd = findViewById(R.id.float_add);
         btnAdd.setOnClickListener(view -> {
             Intent addView = new Intent(this, AddingActivity.class);
-            userViewModel.getLoggedIn().ifPresent(user -> addView.putExtra("LoggedIn", user.getId()));
             startActivity(addView);
+        });
+
+        FloatingActionButton btnSrch = findViewById(R.id.float_search);
+        btnSrch.setOnClickListener(view -> {
+            Intent searchView = new Intent(this, SearchActivity.class);
+            userConnected.feedIntent(searchView);
+            startActivity(searchView);
         });
 
         FloatingActionButton btnProfile = findViewById(R.id.float_profile);

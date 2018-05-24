@@ -25,8 +25,7 @@
         <activity
             android:name=".VisualizationActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
             android:name=".Incidents.IssueDetailsView"
@@ -64,6 +63,10 @@
 
         <activity
             android:name=".ProfileActivity"
+            android:label="@string/title_profile" />
+
+        <activity
+            android:name=".SearchActivity"
             android:label="@string/title_profile">
 
         </activity>

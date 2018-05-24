@@ -141,7 +141,6 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                             //endregion
                         }
                     }
-                    swippedDesc = null;
                     return false;
                 } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     viewPager.setPagingEnabled(false);
