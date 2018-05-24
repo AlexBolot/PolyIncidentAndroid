@@ -13,7 +13,7 @@ import polytechnice.si3.ihm.android.database.model.Progress;
 @Dao
 public interface ProgressDao {
     @Query("SELECT * FROM progress")
-    LiveData<List<Progress >> getAll();
+    LiveData<List<Progress>> getAll();
 
     @Query("SELECT * FROM progress WHERE id LIKE :id")
     LiveData<Progress> getByID(int id);

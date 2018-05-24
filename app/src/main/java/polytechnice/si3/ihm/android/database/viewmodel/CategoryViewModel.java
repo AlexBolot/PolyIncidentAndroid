@@ -25,7 +25,7 @@ public class CategoryViewModel extends AndroidViewModel {
         return categories;
     }
 
-    public LiveData<Category> getByID(int id){
+    public LiveData<Category> getByID(int id) {
         return categoryRepository.getByID(id);
     }
 

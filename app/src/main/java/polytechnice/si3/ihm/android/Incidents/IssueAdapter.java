@@ -32,6 +32,7 @@ import polytechnice.si3.ihm.android.SinglePlayVideoView;
 import polytechnice.si3.ihm.android.SinglePlayVideoView.PlayPauseListener;
 import polytechnice.si3.ihm.android.database.model.Issue;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
+import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 public class IssueAdapter extends ArrayAdapter<Issue> {
     private final static String TAG = "IssueAdapter";
@@ -50,10 +51,13 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
     private float totalDy;
 
     private CustomViewPager viewPager;
+    private UserViewModel userViewModel;
 
 
-    public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues, CustomViewPager viewPager, IssueViewModel issueViewModel) {
+    public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues, CustomViewPager viewPager,
+                        IssueViewModel issueViewModel, UserViewModel userViewModel) {
         super(context, 0, issues);
+        this.userViewModel = userViewModel;
         Log.d("IncidentAdapter", "Create incident adapter with " + issues.toString());
         this.issues = issues;
         this.context = context;

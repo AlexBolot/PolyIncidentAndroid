@@ -180,9 +180,13 @@ public class Issue {
         this.importanceID = importanceID;
     }
 
-    public String getEmergencyPhoneNumber() { return this.emergencyPhoneNumber; }
+    public String getEmergencyPhoneNumber() {
+        return this.emergencyPhoneNumber;
+    }
 
-    public void setEmergencyPhoneNumber(String emergencyPhoneNumber) { this.emergencyPhoneNumber = emergencyPhoneNumber; }
+    public void setEmergencyPhoneNumber(String emergencyPhoneNumber) {
+        this.emergencyPhoneNumber = emergencyPhoneNumber;
+    }
 
     //endregion
 
