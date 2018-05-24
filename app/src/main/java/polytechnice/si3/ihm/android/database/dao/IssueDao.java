@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -23,6 +24,9 @@ public interface IssueDao {
 
     @Query("SELECT * FROM issue WHERE progressID LIKE :progressID")
     LiveData<List<Issue>> getByProgress(int progressID);
+
+    @Update
+    void update(Issue... issues);
 
     @Insert
     void insert(Issue... issues);
