@@ -35,6 +35,12 @@ public class IssueDetailsView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "Activity start");
         setContentView(R.layout.incident_details);
+<<<<<<<HEAD
+                =======
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+>>>>>>>8578f 8085696e22 e954263d9a0a277e04fc11349
         Issue issue = new Issue(getIntent());
         TextView title = findViewById(R.id.title);
         title.setText(issue.getTitle());

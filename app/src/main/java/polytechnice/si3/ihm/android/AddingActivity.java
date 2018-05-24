@@ -22,8 +22,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -49,6 +51,8 @@ public class AddingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adding);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         int loggedIn = getIntent().getIntExtra("LoggedIn", 0);
         UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         userViewModel.getByID(loggedIn).ifPresent(userViewModel::logIn);
@@ -73,7 +77,6 @@ public class AddingActivity extends AppCompatActivity {
             {
                 Intent pickContact =  new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
                 startActivityForResult(pickContact, 1);
-                Log.d("HERE1", "au bon endroit");
             }
         });
     }
@@ -98,6 +101,12 @@ public class AddingActivity extends AppCompatActivity {
         User assignee = (User) ddlAssignee.getSelectedItem();
         String phoneNumber = txtPhoneNumber.getText().toString().trim();
 
+        if (txtPhoneNumber.getText().toString().trim().isEmpty()) {
+            phoneNumber = assignee.getPhoneNumber();
+        }
+
+        String finalPhoneNumber = phoneNumber;
+
         userViewModel.getLoggedIn().ifPresent(currentUser -> {
             int assigneeID = assignee.getId();
             int creatorID = currentUser.getId();
@@ -105,24 +114,32 @@ public class AddingActivity extends AppCompatActivity {
             int importanceID = importance.getId();
             int progressID = 1; //corresponds to default state.
 
+            Date currentDate = new Date();
+            SimpleDateFormat format = new SimpleDateFormat("'Le' dd/MM/yyyy 'à' hh:mm");
+
             Issue issue = new Issue(
                     assigneeID,
                     creatorID,
                     title,
                     descr,
                     selectedPath,
-                    new Date().toString(),
+                    format.format(currentDate).toString(),
                     categoryID,
                     progressID,
                     importanceID,
-                    phoneNumber);
+                    finalPhoneNumber);
 
             issueViewModel.insert(issue);
 
             Log.d("BOB", issue.toString());
         });
 
+        Toast.makeText(this, "Incident ajouté", Toast.LENGTH_SHORT).show();
 
+        Uri uri = Uri.parse("smsto:" + phoneNumber);
+        Intent sendIncidentIntent = new Intent(Intent.ACTION_SENDTO, uri);
+        sendIncidentIntent.putExtra("sms_body", "Votre numéro a été ajouté comme contact sur un nouvel incident de PolyIncident");
+        startActivity(sendIncidentIntent);
     }
 
     private void setUpSpinners() {
@@ -231,19 +248,18 @@ public class AddingActivity extends AppCompatActivity {
             try {
                 String phoneNo = null ;
                 String name = null;
-                // getData() method will have the Content Uri of the selected contact
+                // getData() avec le content uri du contact selectionne
                 Uri contactUri = data.getData();
-                //Query the content uri
+                //query le content uri
                 cursor = getContentResolver().query(contactUri, null, null, null, null);
                 cursor.moveToFirst();
                 int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 phoneNo = cursor.getString(phoneIndex);
-                Log.d("PHONENUMBER", "number : " + phoneNo);
                 txtPhoneNumber.setText(phoneNo);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
         }
         else if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
             Uri selectedImage = data.getData();

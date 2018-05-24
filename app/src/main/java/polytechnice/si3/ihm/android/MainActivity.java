@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -70,6 +71,10 @@ public class MainActivity extends AppCompatActivity {
                 new Progress("Traité"));
 
 
+        Date today = new Date();
+
+        final SimpleDateFormat formatter = new SimpleDateFormat("'Le' dd/MM/yyyy 'à' hh:mm");
+
         //Get all users
         userViewModel.getAll().observeForever(userList -> {
             if (userList != null && !userList.isEmpty()) {
@@ -78,22 +83,22 @@ public class MainActivity extends AppCompatActivity {
                 issueViewModel.insert(
                         new Issue(userList.get(0).getId(), userList.get(1).getId(),
                                 "Je veux un raton laveur", "Il est trop mignon",
-                                "https://i.imgur.com/VVWVgxp.png", new Date().toString(),
-                                1, 2, 2, "621236433"),
+                                "https://i.imgur.com/VVWVgxp.png", formatter.format(today).toString(),
+                                1, 2, 2, "0621236433"),
                         new Issue(userList.get(1).getId(), userList.get(2).getId(),
                                 "Vase cassé", "Je balance pas, mais le vase est cassé",
-                                "https://i.imgur.com/URVyanB.png", new Date().toString(),
-                                1, 3, 2, "621236433"),
+                                "https://i.imgur.com/URVyanB.png", formatter.format(today).toString(),
+                                1, 3, 2, "0621236433"),
                         new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
                                 "On me suit", "Je me sens épié depuis quelques temps",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
-                                new Date().toString(),
-                                1, 1, 2, "621236433"),
+                                formatter.format(today).toString(),
+                                1, 1, 2, "0621236433"),
                         new Issue(userList.get(userList.size() - 1).getId(), userList.get(0).getId(),
                                 "On me suit", "J'ai faim.",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
-                                new Date().toString(),
-                                1, 1, 2, "621236433")
+                                formatter.format(today).toString(),
+                                1, 1, 2, "0621236433")
                 );
             }
         });
@@ -154,6 +159,13 @@ public class MainActivity extends AppCompatActivity {
             Intent addView = new Intent(this, AddingActivity.class);
             userViewModel.getLoggedIn().ifPresent(user -> addView.putExtra("LoggedIn", user.getId()));
             startActivity(addView);
+        });
+
+        FloatingActionButton btnProfile = findViewById(R.id.float_profile);
+        btnProfile.setOnClickListener(view -> {
+            Intent profileView = new Intent(this, ProfileActivity.class);
+            userViewModel.getLoggedIn().ifPresent(user -> profileView.putExtra("Logged in", user.getId()));
+            startActivity(profileView);
         });
     }
 
