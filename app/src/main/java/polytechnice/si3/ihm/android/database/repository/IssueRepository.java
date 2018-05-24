@@ -6,6 +6,7 @@ import android.arch.lifecycle.MediatorLiveData;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import polytechnice.si3.ihm.android.database.GlobalDB;
@@ -45,6 +46,10 @@ public class IssueRepository {
 
     public void update(Issue... issues) {
         new updateAsyncTask().execute(issues);
+    }
+
+    public void updateProgress(int newProgressID, Issue... issues) {
+        new updateProgressAsyncTask(newProgressID).execute(issues);
     }
 
     public void delete(Issue... issues) {
@@ -88,6 +93,23 @@ public class IssueRepository {
         @Override
         protected Void doInBackground(final Issue... issues) {
             issueDao.insert(issues);
+            return null;
+        }
+    }
+
+    private static class updateProgressAsyncTask extends AsyncTask<Issue, Void, Void> {
+
+        private int newProgressID;
+
+        public updateProgressAsyncTask(int newProgressID) {
+            this.newProgressID = newProgressID;
+        }
+
+        @Override
+        protected Void doInBackground(Issue... issues) {
+
+            Arrays.stream(issues).forEach(issue -> issueDao.updateProgress(issue.getId(), newProgressID));
+
             return null;
         }
     }

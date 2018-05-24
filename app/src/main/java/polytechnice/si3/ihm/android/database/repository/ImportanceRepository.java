@@ -2,6 +2,7 @@ package polytechnice.si3.ihm.android.database.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
@@ -9,7 +10,6 @@ import java.util.List;
 import polytechnice.si3.ihm.android.database.GlobalDB;
 import polytechnice.si3.ihm.android.database.dao.ImportanceDao;
 import polytechnice.si3.ihm.android.database.model.Importance;
-import polytechnice.si3.ihm.android.database.model.Progress;
 
 public class ImportanceRepository {
     private static ImportanceDao importanceDao;
@@ -29,8 +29,13 @@ public class ImportanceRepository {
         return importances;
     }
 
-    public LiveData<Importance> getByLabel(String label){
-        return importanceDao.getByLabel(label);
+    public LiveData<Importance> getByID(int id) {
+
+        MediatorLiveData<Importance> importance = new MediatorLiveData<>();
+
+        new getByID(importance).execute(id);
+
+        return importance;
     }
 
     public void insert(Importance... importances) {
@@ -48,6 +53,24 @@ public class ImportanceRepository {
     //----------------------------------------------------//
     //-------------------- AsyncTasks --------------------//
     //----------------------------------------------------//
+
+    private static class getByID extends AsyncTask<Integer, Void, LiveData<Importance>> {
+        private MediatorLiveData<Importance> importance;
+
+        getByID(MediatorLiveData<Importance> importance) {
+            this.importance = importance;
+        }
+
+        @Override
+        protected LiveData<Importance> doInBackground(Integer... integers) {
+            return importanceDao.getByID(integers[0]);
+        }
+
+        @Override
+        protected void onPostExecute(LiveData<Importance> importance) {
+            importance.observeForever(p -> this.importance.setValue(p));
+        }
+    }
 
     private static class insertAsyncTask extends AsyncTask<Importance, Void, Void> {
         @Override

@@ -2,6 +2,7 @@ package polytechnice.si3.ihm.android.database.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.os.AsyncTask;
 
 import java.util.List;
@@ -28,8 +29,12 @@ public class CategoryRepository {
         return categories;
     }
 
-    public LiveData<Category> getByLabel(String label){
-        return categoryDao.getByLabel(label);
+    public LiveData<Category> getByID(int id) {
+        MediatorLiveData<Category> category = new MediatorLiveData<>();
+
+        new getByID(category).execute(id);
+
+        return category;
     }
 
     public void insert(Category... categories) {
@@ -44,9 +49,28 @@ public class CategoryRepository {
         new deleteAllAsyncTask().execute();
     }
 
+
     //----------------------------------------------------//
     //-------------------- AsyncTasks --------------------//
     //----------------------------------------------------//
+
+    private static class getByID extends AsyncTask<Integer, Void, LiveData<Category>> {
+        private MediatorLiveData<Category> category;
+
+        getByID(MediatorLiveData<Category> category) {
+            this.category = category;
+        }
+
+        @Override
+        protected LiveData<Category> doInBackground(Integer... integers) {
+            return categoryDao.getByID(integers[0]);
+        }
+
+        @Override
+        protected void onPostExecute(LiveData<Category> category) {
+            category.observeForever(p -> this.category.setValue(p));
+        }
+    }
 
     private static class insertAsyncTask extends AsyncTask<Category, Void, Void> {
         @Override
