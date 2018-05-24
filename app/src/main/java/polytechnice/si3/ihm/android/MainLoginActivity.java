@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.List;
 
@@ -64,7 +65,11 @@ public class MainLoginActivity extends AppCompatActivity {
     }
 
     public User getConnectedUser() {
-        User userConnected = new User(false, "2", "222");
-        return userConnected;
+        EditText login = findViewById(R.id.login);
+        EditText password = findViewById(R.id.password);
+        Log.d(TAG + "_login", "Try to log : {" + login.getText().toString() + ", "
+                + password.getText().toString() + "}");
+        return userViewModel.getByNameAndPhoneNumber(login.getText().toString(),
+                password.getText().toString()).orElse(null);
     }
 }
