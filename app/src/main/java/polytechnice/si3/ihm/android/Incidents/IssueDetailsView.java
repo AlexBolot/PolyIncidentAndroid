@@ -35,12 +35,8 @@ public class IssueDetailsView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "Activity start");
         setContentView(R.layout.incident_details);
-<<<<<<<HEAD
-                =======
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
->>>>>>>8578f 8085696e22 e954263d9a0a277e04fc11349
         Issue issue = new Issue(getIntent());
         TextView title = findViewById(R.id.title);
         title.setText(issue.getTitle());
@@ -59,6 +55,14 @@ public class IssueDetailsView extends AppCompatActivity {
         progress = progressViewModel.getByID(issue.getProgressID()).orElse(null);
         //endregion
 
+
+        TextView creator = findViewById(R.id.creator);
+        creator.setText(this.creator.getName());
+
+        TextView assignee = findViewById(R.id.resp);
+        assignee.setText(this.assignee.getName());
+
+        //TODO Listener to start UserActivity on creator or resp
 
         TextView progress = findViewById(R.id.progress);
         progress.setText(this.progress.getLabel());
