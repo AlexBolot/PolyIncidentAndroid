@@ -14,100 +14,16 @@ import android.view.MenuItem;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 import polytechnice.si3.ihm.android.Incidents.DoingFragment;
 import polytechnice.si3.ihm.android.Incidents.DoneFragment;
 import polytechnice.si3.ihm.android.Incidents.TodoFragment;
-import polytechnice.si3.ihm.android.database.model.Category;
-import polytechnice.si3.ihm.android.database.model.Importance;
-import polytechnice.si3.ihm.android.database.model.Issue;
-import polytechnice.si3.ihm.android.database.model.Progress;
 import polytechnice.si3.ihm.android.database.model.User;
-import polytechnice.si3.ihm.android.database.viewmodel.CategoryViewModel;
-import polytechnice.si3.ihm.android.database.viewmodel.ImportanceViewModel;
-import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
-import polytechnice.si3.ihm.android.database.viewmodel.ProgressViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 public class VisualizationActivity extends AppCompatActivity {
 
     private static String TAG = "VisualizationActivity";
-    private static boolean mustInitDB = false;
     private User userConnected;
-
-    //region Database
-    private void setupDB(UserViewModel userViewModel, IssueViewModel issueViewModel,
-                         CategoryViewModel categoryViewModel, ImportanceViewModel importanceViewModel,
-                         ProgressViewModel progressViewModel) {
-
-        //region ========== Deletions =======
-        issueViewModel.deleteAll();
-        userViewModel.deleteAll();
-        importanceViewModel.deleteAll();
-        categoryViewModel.deleteAll();
-        progressViewModel.deleteAll();
-
-        userViewModel.insert(
-                new User(false, "Jean Dove", "0655625545"),
-                new User(false, "Paul Bismut", "0621246433"),
-                new User(true, "Jeanne Mensoif", "0621256333"),
-                new User(false, "Christine Bourrin", "0612336533"));
-
-        categoryViewModel.insert(
-                new Category("Pertes"),
-                new Category("Dégâts"),
-                new Category("Sécurité"),
-                new Category("Panne"),
-                new Category("Autre"));
-
-        importanceViewModel.insert(
-                new Importance("Faible"),
-                new Importance("Moyenne"),
-                new Importance("Forte"));
-
-        progressViewModel.insert(
-                new Progress("À traiter"),
-                new Progress("En cours de traitement"),
-                new Progress("Traité"));
-
-
-        Date today = new Date();
-
-        final SimpleDateFormat formatter = new SimpleDateFormat("'Le' dd/MM/yyyy 'à' hh:mm");
-
-        //Get all users
-        userViewModel.getAll().observeForever(userList -> {
-            if (userList != null && !userList.isEmpty()) {
-                Log.i(TAG + "_initDB", userList.toString());
-
-                issueViewModel.insert(
-                        new Issue(userList.get(0).getId(), userList.get(1).getId(),
-                                "Ampoules grillées", "Plus de lumières qui fonctionnent en salle E-107",
-                                "https://i.imgur.com/VVWVgxp.png", formatter.format(today),
-                                4, 1, 2, "0621236433"),
-                        new Issue(userList.get(2).getId(), userList.get(1).getId(),
-                                "Voiture mal garée", "Je balance pas, mais une voiture gêne fortement le passage",
-                                "https://i.imgur.com/URVyanB.png", formatter.format(today),
-                                5, 3, 3, "0621236433"),
-                        new Issue(userList.get(0).getId(), userList.get(0).getId(),
-                                "Clime cassée", "Le dernier partiel s'est passé dans une châleur écrasante, très gênant (amphi E+131)",
-                                "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
-                                formatter.format(today),
-                                4, 1, 2, "0621236433"),
-                        new Issue(userList.get(2).getId(), userList.get(1).getId(),
-                                "Chargeur perdu", "J'ai perdu le chargeur de mon téléphone",
-                                "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
-                                formatter.format(today),
-                                2, 1, 1, "0621236433")
-                );
-            }
-        });
-    }
-
-    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,14 +47,6 @@ public class VisualizationActivity extends AppCompatActivity {
 
         UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
-        userViewModel.getAll().observe(this, users -> {
-            if (users != null && !users.isEmpty())
-                users.stream().findAny().ifPresent(user -> {
-                    userViewModel.logIn(user);
-                    Log.d(TAG, "Logged in : " + user);
-                });
-        });
-
         FloatingActionButton btnAdd = findViewById(R.id.float_add);
         btnAdd.setOnClickListener(view -> {
             Intent addView = new Intent(this, AddingActivity.class);
@@ -152,10 +60,6 @@ public class VisualizationActivity extends AppCompatActivity {
             userConnected.feedIntent(profileView);
             startActivity(profileView);
         });
-    }
-
-    private void print(List list) {
-        if (list != null && !list.isEmpty()) Log.i(TAG, list.toString());
     }
 
     @Override
