@@ -15,9 +15,6 @@ public interface UserDao {
     @Query("SELECT * FROM user")
     LiveData<List<User>> getAll();
 
-    @Query("SELECT * FROM user WHERE name LIKE :name")
-    User getByName(String name);
-
     @Query("SELECT * FROM user WHERE id LIKE :id")
     User getByID(int id);
 
@@ -33,3 +30,6 @@ public interface UserDao {
     @Query("DELETE FROM user")
     void deleteAll();
 }
+
+
+
