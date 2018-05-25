@@ -1,6 +1,5 @@
 package polytechnice.si3.ihm.android;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -18,12 +17,12 @@ import polytechnice.si3.ihm.android.Incidents.DoingFragment;
 import polytechnice.si3.ihm.android.Incidents.DoneFragment;
 import polytechnice.si3.ihm.android.Incidents.TodoFragment;
 import polytechnice.si3.ihm.android.database.model.User;
-import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 public class VisualizationActivity extends AppCompatActivity {
 
     private static String TAG = "VisualizationActivity";
     private User userConnected;
+    private Runnable globalUpdateRunnable = this::recreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +44,11 @@ public class VisualizationActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-
         FloatingActionButton btnAdd = findViewById(R.id.float_add);
         btnAdd.setOnClickListener(view -> {
             Intent addView = new Intent(this, AddingActivity.class);
             userConnected.feedIntent(addView);
-            startActivity(addView);
+            startActivityForResult(addView, 1);
         });
 
         FloatingActionButton btnSrch = findViewById(R.id.float_search);
@@ -105,11 +102,11 @@ public class VisualizationActivity extends AppCompatActivity {
 
             switch (position) {
                 case 1:
-                    return TodoFragment.newInstance(position, userConnected);
+                    return TodoFragment.newInstance(position, userConnected, globalUpdateRunnable);
                 case 2:
-                    return DoingFragment.newInstance(position, userConnected);
+                    return DoingFragment.newInstance(position, userConnected, globalUpdateRunnable);
                 case 3:
-                    return DoneFragment.newInstance(position, userConnected);
+                    return DoneFragment.newInstance(position, userConnected, globalUpdateRunnable);
                 default:
                     return PlaceholderFragment.newInstance(position);
             }
@@ -119,5 +116,10 @@ public class VisualizationActivity extends AppCompatActivity {
         public int getCount() {
             return 3;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK) recreate();
     }
 }

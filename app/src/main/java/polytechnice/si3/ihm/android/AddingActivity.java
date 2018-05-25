@@ -1,23 +1,16 @@
 package polytechnice.si3.ihm.android;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +18,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.io.InputStream;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,19 +34,25 @@ import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class AddingActivity extends AppCompatActivity {
 
     private String selectedPath = "";
     private EditText txtPhoneNumber;
     private User userConnected;
+    private LatLng selectedLocation = new LatLng(-1, -1);
+
+    public static final int CONTACT_REQUEST_CODE = 1;
+    public static final int IMAGE_REQUEST_CODE = 2;
+    public static final int LOCATION_REQUEST_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_adding);
 
-        this.userConnected = new User(getIntent());
+        userConnected = new User(getIntent());
 
         int loggedIn = getIntent().getIntExtra("LoggedIn", 0);
         UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
@@ -60,8 +60,7 @@ public class AddingActivity extends AppCompatActivity {
 
         findViewById(R.id.btn_add_pic).setOnClickListener(view -> getImageFromAlbum());
 
-        //TODO : this is temporary
-        findViewById(R.id.btn_add_pos).setOnClickListener(view -> startActivity(new Intent(this, MapsActivity.class)));
+        findViewById(R.id.btn_add_pos).setOnClickListener(view -> startActivityForResult(new Intent(this, MapsActivity.class), LOCATION_REQUEST_CODE));
 
         findViewById(R.id.btn_add_issue).setOnClickListener(view -> addIssue());
 
@@ -72,12 +71,9 @@ public class AddingActivity extends AppCompatActivity {
         txtPhoneNumber = findViewById(R.id.phoneNumber);
         txtPhoneNumber.setText(userConnected.getPhoneNumber());
 
-        pickContact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-                startActivityForResult(pickContact, 1);
-            }
+        pickContact.setOnClickListener(v -> {
+            Intent pickContact1 = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            startActivityForResult(pickContact1, CONTACT_REQUEST_CODE);
         });
     }
 
@@ -85,7 +81,6 @@ public class AddingActivity extends AppCompatActivity {
 
         //Get ViewModel
         IssueViewModel issueViewModel = ViewModelProviders.of(this).get(IssueViewModel.class);
-        UserViewModel userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
         //Get the fields from view
         EditText txtTitle = findViewById(R.id.txtTitle);
@@ -101,32 +96,32 @@ public class AddingActivity extends AppCompatActivity {
         User assignee = (User) ddlAssignee.getSelectedItem();
         String phoneNumber = txtPhoneNumber.getText().toString().trim();
 
-        userViewModel.getLoggedIn().ifPresent(currentUser -> {
-            int assigneeID = assignee.getId();
-            int creatorID = currentUser.getId();
-            int categoryID = category.getId();
-            int importanceID = importance.getId();
-            int progressID = 1; //corresponds to default state.
+        int assigneeID = assignee.getId();
+        int creatorID = userConnected.getId();
+        int categoryID = category.getId();
+        int importanceID = importance.getId();
+        int progressID = 1; //corresponds to default state.
 
-            Date currentDate = new Date();
-            SimpleDateFormat format = new SimpleDateFormat("'Le' dd/MM/yyyy 'à' hh:mm");
+        Date currentDate = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("'Le' dd/MM/yyyy 'à' hh:mm");
 
-            Issue issue = new Issue(
-                    assigneeID,
-                    creatorID,
-                    title,
-                    descr,
-                    selectedPath,
-                    format.format(currentDate).toString(),
-                    categoryID,
-                    progressID,
-                    importanceID,
-                    phoneNumber);
+        Issue issue = new Issue(
+                assigneeID,
+                creatorID,
+                title,
+                descr,
+                selectedPath,
+                format.format(currentDate),
+                categoryID,
+                progressID,
+                importanceID,
+                phoneNumber,
+                selectedLocation.latitude,
+                selectedLocation.longitude);
 
-            issueViewModel.insert(issue);
+        issueViewModel.insert(issue);
 
-            Log.d("BOB", issue.toString());
-        });
+        Log.d("New Issue created", issue.toString());
 
         Toast.makeText(this, "Incident ajouté", Toast.LENGTH_SHORT).show();
 
@@ -137,6 +132,9 @@ public class AddingActivity extends AppCompatActivity {
                     "sur un nouvel incident de PolyIncident, dont les détails sont : " + title + " : " + descr + ".");
             startActivity(sendIncidentIntent);
         }
+
+        setResult(RESULT_OK);
+        finish();
     }
 
     private void setUpSpinners() {
@@ -185,92 +183,67 @@ public class AddingActivity extends AppCompatActivity {
         });
     }
 
-    private void request() {
-
-        if (ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            // No explanation needed; request the permission
-            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE}, 1);
-
-        } else {
-            // Permission has already been granted
-
-            Uri file = Uri.parse("content://media/external/images/media/110642");
-
-            try (InputStream inputStream = getContentResolver().openInputStream(file)) {
-                Bitmap bmp = BitmapFactory.decodeStream(inputStream);
-                ImageView imageView = findViewById(R.id.add_imageView);
-                imageView.setImageBitmap(bmp);
-            } catch (Exception e) {
-                Log.d("Debug.catch", e.getMessage());
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-
-        switch (requestCode) {
-
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Uri file = Uri.parse("content://media/external/images/media/110642");
-
-                    try (InputStream inputStream = getContentResolver().openInputStream(file)) {
-                        Bitmap bmp = BitmapFactory.decodeStream(inputStream);
-                        ImageView imageView = findViewById(R.id.add_imageView);
-                        imageView.setImageBitmap(bmp);
-                    } catch (Exception e) {
-                        Log.d("Debug.catch", e.getMessage());
-                    }
-                }
-            }
-        }
-    }
-
     private void getImageFromAlbum() {
+        if (checkSelfPermission(READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
+            requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, 1);
+        }
+
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, 0);
+
+        startActivityForResult(photoPickerIntent, IMAGE_REQUEST_CODE);
+
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            Cursor cursor = null;
-            try {
-                String phoneNo = null;
-                String name = null;
-                // getData() avec le content uri du contact selectionne
-                Uri contactUri = data.getData();
-                //query le content uri
-                cursor = getContentResolver().query(contactUri, null, null, null, null);
-                cursor.moveToFirst();
-                int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                phoneNo = cursor.getString(phoneIndex);
-                txtPhoneNumber.setText(phoneNo);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        switch (requestCode) {
+            case CONTACT_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    Cursor cursor = null;
+                    try {
+                        String phoneNo;
+                        // getData() avec le content uri du contact selectionne
+                        Uri contactUri = data.getData();
+                        //query le content uri
+                        cursor = getContentResolver().query(contactUri, null, null, null, null);
+                        cursor.moveToFirst();
+                        int phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                        phoneNo = cursor.getString(phoneIndex);
+                        txtPhoneNumber.setText(phoneNo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (cursor != null)
+                            cursor.close();
+                    }
+                }
+                break;
 
-        } else if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
-            Uri selectedImage = data.getData();
+            case IMAGE_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = data.getData();
 
-            selectedPath = selectedImage.toString();
+                    selectedPath = selectedImage.toString();
 
-            try {
-                Log.d("Debug.alex", selectedImage.toString());
+                    try {
+                        Log.d("Debug.alex", selectedImage.toString());
 
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
-                ImageView imageView = findViewById(R.id.add_imageView);
-                imageView.setImageBitmap(bitmap);
-            } catch (Exception e) {
-                Log.d("Debug.catch", "Some exception " + e.getStackTrace().toString());
-            }
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+                        ImageView imageView = findViewById(R.id.add_imageView);
+                        imageView.setImageBitmap(bitmap);
+                    } catch (Exception e) {
+                        Log.d("Debug.catch", "Some exception " + e.getStackTrace().toString());
+                    }
+                }
+                break;
+
+            case LOCATION_REQUEST_CODE:
+                if (resultCode == RESULT_OK && data.hasExtra("location")) {
+                    selectedLocation = (LatLng) data.getExtras().get("location");
+                }
         }
     }
 }

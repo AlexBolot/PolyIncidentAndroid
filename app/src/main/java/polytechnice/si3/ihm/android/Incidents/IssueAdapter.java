@@ -54,11 +54,13 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
     private CustomViewPager viewPager;
     private User userConnected;
 
+    private Runnable globalUpdateRunnable;
 
     public IssueAdapter(@NonNull Context context, @NonNull List<Issue> issues, CustomViewPager viewPager,
-                        IssueViewModel issueViewModel, User userConnected) {
+                        IssueViewModel issueViewModel, User userConnected, Runnable globalUpdateRunnable) {
         super(context, 0, issues);
         this.userConnected = userConnected;
+        this.globalUpdateRunnable = globalUpdateRunnable;
         Log.d(TAG, "Create incident adapter with " + issues.toString());
         this.issues = issues;
         this.context = context;
@@ -66,14 +68,17 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
         this.issueViewModel = issueViewModel;
     }
 
-    @NonNull
     @Override
     public View getView(int index, @Nullable View view, @NonNull ViewGroup parent) {
         if (userConnected == null && view != null)
             view.setVisibility(View.GONE);
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.incident_item, null);
-            setUpView(view, index);
+            try {
+                view = LayoutInflater.from(context).inflate(R.layout.incident_item, null);
+                setUpView(view, index);
+            } catch (Exception e) {
+                //LOOOOOOLLLLLL
+            }
         }
         return view;
     }
@@ -202,6 +207,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     Log.d(TAG, "Backward elem : " + issue);
                     issueViewModel.updateProgress(issue, issue.getProgressID() - 1);
                     issue.setProgressID(issue.getProgressID() - 1);
+                    globalUpdateRunnable.run();
                 });
             }
 
@@ -212,6 +218,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     Log.d(TAG, "Forward elem : " + issue);
                     issueViewModel.updateProgress(issue, issue.getProgressID() + 1);
                     issue.setProgressID(issue.getProgressID() + 1);
+                    globalUpdateRunnable.run();
                 });
             }
 

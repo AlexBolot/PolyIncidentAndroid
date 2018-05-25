@@ -7,6 +7,8 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.Intent;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(foreignKeys = {
@@ -51,25 +53,21 @@ public class Issue {
     @ColumnInfo
     private String emergencyPhoneNumber;
 
+    @ColumnInfo
+    private double latitude;
+
+    @ColumnInfo
+    private double longitude;
+
     @Ignore
     public Issue(int assigneeID, int creatorID, String title, String description, String linkToPreview,
-                 String date, int categoryID, int progressID, int importanceID, String emergencyPhoneNumber) {
-        this.id = 0;
-        this.assigneeID = assigneeID;
-        this.creatorID = creatorID;
-        this.title = title;
-        this.description = description;
-        this.linkToPreview = linkToPreview;
-        this.date = date;
-        this.categoryID = categoryID;
-        this.progressID = progressID;
-        this.importanceID = importanceID;
-        this.emergencyPhoneNumber = emergencyPhoneNumber;
+                 String date, int categoryID, int progressID, int importanceID, String emergencyPhoneNumber, double latitude, double longitude) {
+        this(0, assigneeID, creatorID, title, description, linkToPreview, date, categoryID, progressID, importanceID, emergencyPhoneNumber, latitude, longitude);
     }
 
     @Deprecated
     public Issue(int id, int assigneeID, int creatorID, String title, String description, String linkToPreview,
-                 String date, int categoryID, int progressID, int importanceID, String emergencyPhoneNumber) {
+                 String date, int categoryID, int progressID, int importanceID, String emergencyPhoneNumber, double latitude, double longitude) {
         this.id = id;
         this.assigneeID = assigneeID;
         this.creatorID = creatorID;
@@ -81,6 +79,8 @@ public class Issue {
         this.progressID = progressID;
         this.importanceID = importanceID;
         this.emergencyPhoneNumber = emergencyPhoneNumber;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public Issue(Intent intentProvidingData) {
@@ -96,6 +96,8 @@ public class Issue {
         importanceID = intentProvidingData.getIntExtra("importanceID", -1);
         progressID = intentProvidingData.getIntExtra("progressID", -1);
         emergencyPhoneNumber = intentProvidingData.getStringExtra("emergencyPhoneNumber");
+        latitude = intentProvidingData.getDoubleExtra("latitude", -1);
+        longitude = intentProvidingData.getDoubleExtra("longitude", -1);
     }
 
     //region --------------- Getters and Setters ---------------
@@ -188,6 +190,26 @@ public class Issue {
         this.emergencyPhoneNumber = emergencyPhoneNumber;
     }
 
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public LatLng getLocation() {
+        return new LatLng(latitude, longitude);
+    }
+
     //endregion
 
     public void feedIntent(Intent intent) {
@@ -203,6 +225,8 @@ public class Issue {
         intent.putExtra("importanceID", this.importanceID);
         intent.putExtra("progressID", this.progressID);
         intent.putExtra("emergencyPhoneNumber", this.emergencyPhoneNumber);
+        intent.putExtra("latitude", this.latitude);
+        intent.putExtra("longitude", this.longitude);
     }
 
     @Override
@@ -218,7 +242,9 @@ public class Issue {
                 ", categoryID=" + categoryID +
                 ", progressID=" + progressID +
                 ", importanceID=" + importanceID +
-                ", phoneNumber=" + emergencyPhoneNumber +
+                ", emergencyPhoneNumber='" + emergencyPhoneNumber + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 '}';
     }
 }

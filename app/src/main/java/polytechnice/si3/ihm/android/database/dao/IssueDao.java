@@ -17,12 +17,6 @@ public interface IssueDao {
     @Query("SELECT * FROM issue")
     LiveData<List<Issue>> getAll();
 
-    @Query("SELECT * FROM issue WHERE assigneeID LIKE :userID")
-    LiveData<Issue> getByAssignedUser(int userID);
-
-    @Query("SELECT * FROM issue WHERE creatorID LIKE :userID")
-    LiveData<Issue> getByCreatorUser(int userID);
-
     @Query("SELECT * FROM issue WHERE progressID LIKE :progressID")
     LiveData<List<Issue>> getByProgress(int progressID);
 

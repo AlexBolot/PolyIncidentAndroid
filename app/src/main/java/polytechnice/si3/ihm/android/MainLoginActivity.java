@@ -83,21 +83,21 @@ public class MainLoginActivity extends AppCompatActivity {
                         new Issue(userList.get(0).getId(), userList.get(1).getId(),
                                 "Ampoules grillées", "Plus de lumières qui fonctionnent en salle E-107",
                                 "https://i.imgur.com/VVWVgxp.png", formatter.format(today),
-                                4, 1, 2, "0621236433"),
+                                4, 2, 2, "0621236433", -1, -1),
                         new Issue(userList.get(2).getId(), userList.get(1).getId(),
                                 "Voiture mal garée", "Je balance pas, mais une voiture gêne fortement le passage",
                                 "https://i.imgur.com/URVyanB.png", formatter.format(today),
-                                5, 3, 3, "0621236433"),
+                                5, 3, 3, "0621236433", -1, -1),
                         new Issue(userList.get(0).getId(), userList.get(0).getId(),
                                 "Clime cassée", "Le dernier partiel s'est passé dans une châleur écrasante, très gênant (amphi E+131)",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
                                 formatter.format(today),
-                                4, 1, 2, "0621236433"),
+                                4, 2, 2, "0621236433", -1, -1),
                         new Issue(userList.get(2).getId(), userList.get(1).getId(),
                                 "Chargeur perdu", "J'ai perdu le chargeur de mon téléphone",
                                 "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
                                 formatter.format(today),
-                                2, 1, 1, "0621236433")
+                                2, 1, 1, "0621236433", -1, -1)
                 );
             }
         });
@@ -145,7 +145,6 @@ public class MainLoginActivity extends AppCompatActivity {
                 this.startActivity(intent);
             }
         });
-
     }
 
     private void print(List list) {

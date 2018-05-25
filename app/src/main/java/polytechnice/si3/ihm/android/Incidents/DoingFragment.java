@@ -24,7 +24,6 @@ import polytechnice.si3.ihm.android.R;
 import polytechnice.si3.ihm.android.database.model.Issue;
 import polytechnice.si3.ihm.android.database.model.User;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
-import polytechnice.si3.ihm.android.database.viewmodel.UserViewModel;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -34,12 +33,14 @@ public class DoingFragment extends Fragment {
 
     private static final String PROGRESS_TO_DISPLAY = "progress";
     private static final String TAG = "DoingFragment";
+    private static Runnable globalUpdateRunnable;
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static DoingFragment newInstance(int progressToDisplay, User userConnected) {
+    public static DoingFragment newInstance(int progressToDisplay, User userConnected, Runnable globalUpdateRunnable) {
+        DoingFragment.globalUpdateRunnable = globalUpdateRunnable;
         DoingFragment fragment = new DoingFragment();
         Bundle args = new Bundle();
         args.putInt(PROGRESS_TO_DISPLAY, progressToDisplay);
@@ -65,19 +66,19 @@ public class DoingFragment extends Fragment {
         IssueViewModel ivm = ViewModelProviders.of(this).get(IssueViewModel.class);
 
         User userConnected = new User(getArguments());
-        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>(), viewPager, ivm, userConnected);
+        IssueAdapter issueAdapter = new IssueAdapter(this.getContext(), new ArrayList<>(), viewPager, ivm, userConnected, globalUpdateRunnable);
 
         int progress = getArguments().getInt(PROGRESS_TO_DISPLAY);
-        LiveData<List<Issue>> liveIssues = ivm.getAll();
+        LiveData<List<Issue>> liveIssues = ivm.getByProgress(progress);
 
         liveIssues.observeForever(issueList -> {
             if (issueList == null || issueList.isEmpty()) return;
 
-            Log.d(TAG, "Refresh list");
-            List<Issue> collect = issueList.stream().filter(issue -> issue.getProgressID() == progress).collect(Collectors.toList());
+            List<Integer> collect = issueList.stream().map(Issue::getId).collect(Collectors.toList());
 
-            checkPermission(collect);
-            issueAdapter.setIssues(collect);
+            Log.d("LIST_DOING", collect.toString());
+            checkPermission(issueList);
+            issueAdapter.setIssues(issueList);
         });
 
         gridView.setAdapter(issueAdapter);

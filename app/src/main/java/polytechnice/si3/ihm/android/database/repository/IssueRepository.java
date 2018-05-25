@@ -2,12 +2,13 @@ package polytechnice.si3.ihm.android.database.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import polytechnice.si3.ihm.android.database.GlobalDB;
 import polytechnice.si3.ihm.android.database.dao.IssueDao;
@@ -33,10 +34,14 @@ public class IssueRepository {
 
     public LiveData<List<Issue>> getByProgress(int progressID) {
 
-        MediatorLiveData<List<Issue>> result = new MediatorLiveData<>();
+        try {
+            return new getByProgressAsyncTask().execute(progressID).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
-        new getByProgressAsyncTask(result).execute(progressID);
-
+        MutableLiveData<List<Issue>> result = new MutableLiveData<>();
+        result.setValue(new ArrayList<>());
         return result;
     }
 
@@ -66,26 +71,9 @@ public class IssueRepository {
 
     private static class getByProgressAsyncTask extends AsyncTask<Integer, Void, LiveData<List<Issue>>> {
 
-        private MediatorLiveData<List<Issue>> issues;
-
-        getByProgressAsyncTask(MediatorLiveData<List<Issue>> issues) {
-            this.issues = issues;
-            this.issues.setValue(new ArrayList<>());
-        }
-
         @Override
         protected LiveData<List<Issue>> doInBackground(Integer... integers) {
             return issueDao.getByProgress(integers[0]);
-        }
-
-        @Override
-        protected void onPostExecute(LiveData<List<Issue>> issues) {
-            issues.observeForever(issueList -> {
-                if (this.issues.getValue() == null || issueList == null) return;
-
-                this.issues.getValue().clear();
-                this.issues.getValue().addAll(issueList);
-            });
         }
     }
 
