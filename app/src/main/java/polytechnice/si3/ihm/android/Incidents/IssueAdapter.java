@@ -167,8 +167,9 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                         canBeClic = false;
                     float dx = event.getX() - xStart;
                     Log.d(TAG + "_swipeMenu", "Moved, swipe ?");
+                    Log.d(TAG + "_swipeMenu_totalDy", "" + totalDy);
                     totalDx += dx;
-                    totalDy += Math.abs(event.getY() - yStart);
+                    totalDy += Math.abs((v.getX() - event.getY()) - yStart);
                     //if we go to right
                     if (dx > 3 && v.getX() + dx <= adminsButton.getWidth()) {
                         if (totalDx < 50) {
