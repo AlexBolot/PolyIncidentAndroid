@@ -36,7 +36,7 @@ public class IssueDetailsView extends AppCompatActivity {
 
     private VideoView playing;
 
-    private String urlPattern = "https://maps.googleapis.com/maps/api/staticmap?zoom=18&size=200x100&maptype=roadmap&format=jpg&visual_refresh=true&markers=size:mid%7Ccolor:0xff0000%7Clabel:Position%7C";
+    private String urlPattern = "https://maps.googleapis.com/maps/api/staticmap?zoom=17.7&size=600x300&maptype=roadmap&format=jpg&visual_refresh=true&markers=size:mid%7Ccolor:0xff0000%7Clabel:Position%7C";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
