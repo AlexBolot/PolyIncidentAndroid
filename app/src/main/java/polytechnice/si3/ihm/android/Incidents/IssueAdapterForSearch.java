@@ -137,7 +137,6 @@ public class IssueAdapterForSearch extends ArrayAdapter<Issue> {
                             //endregion
                         }
                     }
-                    swippedTitle = null;
                     return false;
                 } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     if (swippedTitle != null && swippedTitle != v)

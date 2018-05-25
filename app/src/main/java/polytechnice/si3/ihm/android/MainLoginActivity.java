@@ -47,7 +47,7 @@ public class MainLoginActivity extends AppCompatActivity {
         progressViewModel.deleteAll();
 
         userViewModel.insert(
-                new User(false, "Jean Dove", "0655625545"),
+                    new User(false, "Jean Dove", "0655625545"),
                 new User(false, "Paul Bismut", "0621246433"),
                 new User(true, "Jeanne Mensoif", "0621256333"),
                 new User(false, "Christine Bourrin", "0612336533"));
@@ -66,7 +66,7 @@ public class MainLoginActivity extends AppCompatActivity {
 
         progressViewModel.insert(
                 new Progress("À traiter"),
-                new Progress("Résolu"),
+                new Progress("En résolution"),
                 new Progress("Traité"));
 
 
@@ -82,20 +82,20 @@ public class MainLoginActivity extends AppCompatActivity {
                 issueViewModel.insert(
                         new Issue(userList.get(0).getId(), userList.get(1).getId(),
                                 "Ampoules grillées", "Plus de lumières qui fonctionnent en salle E-107",
-                                "https://i.imgur.com/VVWVgxp.png", formatter.format(today),
+                                "https://www.sonelec-musique.com/photos2/divers_ampoule_incandescence_paf_001a.jpg", formatter.format(today),
                                 4, 2, 2, "0621236433", -1, -1),
                         new Issue(userList.get(2).getId(), userList.get(1).getId(),
                                 "Voiture mal garée", "Je balance pas, mais une voiture gêne fortement le passage",
-                                "https://i.imgur.com/URVyanB.png", formatter.format(today),
+                                "http://static.hitek.fr/img/actualite/kmduibkl.jpg", formatter.format(today),
                                 5, 3, 3, "0621236433", -1, -1),
                         new Issue(userList.get(0).getId(), userList.get(0).getId(),
                                 "Clime cassée", "Le dernier partiel s'est passé dans une châleur écrasante, très gênant (amphi E+131)",
-                                "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
+                                "http://static1.seety.pagesjaunes.fr/dam_206764/4d5e53c3-09eb-4624-88a1-038ec6cfc261-1200",
                                 formatter.format(today),
                                 4, 2, 2, "0621236433", -1, -1),
                         new Issue(userList.get(2).getId(), userList.get(1).getId(),
                                 "Chargeur perdu", "J'ai perdu le chargeur de mon téléphone",
-                                "https://dl.dropboxusercontent.com/s/j1oog5oud6e6res/038%20%20%20%20le%20rassemblement%20du%20corbeau%20ii.mp4",
+                                "https://dl.dropboxusercontent.com/s/5byy5g6av6o0x1u/20180525_072657.mp4",
                                 formatter.format(today),
                                 2, 1, 1, "0621236433", -1, -1)
                 );
@@ -176,7 +176,7 @@ public class MainLoginActivity extends AppCompatActivity {
         Log.d(TAG + "_login", "Try to log : {" + login.getText().toString() + ", "
                 + password.getText().toString() + "}");
         User tryToConnect = userViewModel.getByNameAndPhoneNumber(login.getText().toString(),
-                password.getText().toString()).orElse(userViewModel.getByNameAndPhoneNumber("Jeanne Mensoif", "0621256333").orElse(null));
+                password.getText().toString()).orElse(null);
         if (tryToConnect == null)
             Toast.makeText(this, "Identifiants incorrects", Toast.LENGTH_SHORT).show();
         return tryToConnect;

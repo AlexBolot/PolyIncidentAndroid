@@ -322,9 +322,9 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                     placeholder.setVisibility(View.GONE);
                     placeHolderPlay.setVisibility(View.VISIBLE);
                     mediaController.hide();
-
+                    videoPreview.seekTo(1);
                 });
-                videoPreview.seekTo(200);
+                videoPreview.seekTo(1);
                 slideDown(title);
                 mediaController.hide();
 
