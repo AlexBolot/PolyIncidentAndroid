@@ -13,15 +13,20 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
 
 import polytechnice.si3.ihm.android.R;
+import polytechnice.si3.ihm.android.database.model.Category;
+import polytechnice.si3.ihm.android.database.model.Importance;
 import polytechnice.si3.ihm.android.database.model.Issue;
+import polytechnice.si3.ihm.android.database.model.Progress;
 import polytechnice.si3.ihm.android.database.model.User;
+import polytechnice.si3.ihm.android.database.viewmodel.CategoryViewModel;
+import polytechnice.si3.ihm.android.database.viewmodel.ImportanceViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
+import polytechnice.si3.ihm.android.database.viewmodel.ProgressViewModel;
 
 import static android.view.View.GONE;
 
@@ -29,6 +34,9 @@ public class IssueAdapterForSearch extends ArrayAdapter<Issue> {
     private final static String TAG = "IssueAdapterForSearch";
     private List<Issue> issues;
     private Context context;
+    private final ProgressViewModel progressViewModel;
+    private final ImportanceViewModel importanceViewModel;
+    private CategoryViewModel categoryViewModel;
 
     private View swippedTitle;
     private float xStart;
@@ -43,12 +51,17 @@ public class IssueAdapterForSearch extends ArrayAdapter<Issue> {
 
 
     public IssueAdapterForSearch(@NonNull Context context, @NonNull List<Issue> issues,
-                                 IssueViewModel issueViewModel, User userConnected) {
+                                 IssueViewModel issueViewModel, User userConnected,
+                                 ProgressViewModel progressViewModel, ImportanceViewModel importanceViewModel,
+                                 CategoryViewModel categoryViewModel) {
         super(context, 0, issues);
         this.issueViewModel = issueViewModel;
         this.userConnected = userConnected;
         this.issues = issues;
         this.context = context;
+        this.progressViewModel = progressViewModel;
+        this.importanceViewModel = importanceViewModel;
+        this.categoryViewModel = categoryViewModel;
     }
 
     @NonNull
@@ -63,13 +76,35 @@ public class IssueAdapterForSearch extends ArrayAdapter<Issue> {
         return view;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
     private void setUpView(View view, int indexOfInc) {
         Issue issue = this.getItem(indexOfInc);
         if (issue == null) return;
 
         TextView title = view.findViewById(R.id.inc_title2);
         title.setText(issue.getTitle());
+
+        TextView progressT = view.findViewById(R.id.progress);
+        Progress progress = progressViewModel.getByID(issue.getProgressID()).orElse(null);
+        if (progress != null)
+            progressT.setText(progress.getLabel());
+        else
+            progressT.setText("Progression inconnue");
+
+        TextView importanceT = view.findViewById(R.id.importance);
+        Importance importance = importanceViewModel.getByID(issue.getImportanceID()).orElse(null);
+        if (importance != null)
+            importanceT.setText(importance.getLabel());
+        else
+            importanceT.setText("Progression inconnue");
+
+        TextView categoryT = view.findViewById(R.id.category);
+        Category category = categoryViewModel.getByID(issue.getCategoryID()).orElse(null);
+        if (category != null)
+            categoryT.setText(category.getLabel());
+        else
+            categoryT.setText("Progression inconnue");
+
 
         //region ===== Init action depending on if you're admin or not ====
         View adminsButton = view.findViewById(R.id.adminButtonsLayout);

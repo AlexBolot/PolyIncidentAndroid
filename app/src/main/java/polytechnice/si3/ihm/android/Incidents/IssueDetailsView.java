@@ -65,11 +65,11 @@ public class IssueDetailsView extends AppCompatActivity {
 
         TextView importanceT = findViewById(R.id.importance);
         if (importance != null)
-            importanceT.setText("Urgence " + importance.getLabel());
+            importanceT.setText("Incident " + importance.getLabel().toLowerCase());
 
         TextView categoryT = findViewById(R.id.category);
         if (category != null)
-            categoryT.setText("Catégorie " + category.getLabel());
+            categoryT.setText("Catégorie : " + category.getLabel());
 
 
         Button callButton = findViewById(R.id.phoneCallButton);

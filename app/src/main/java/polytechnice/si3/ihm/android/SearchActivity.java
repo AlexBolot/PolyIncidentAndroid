@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.GridView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,10 @@ import java.util.stream.Collectors;
 import polytechnice.si3.ihm.android.Incidents.IssueAdapterForSearch;
 import polytechnice.si3.ihm.android.database.model.Issue;
 import polytechnice.si3.ihm.android.database.model.User;
+import polytechnice.si3.ihm.android.database.viewmodel.CategoryViewModel;
+import polytechnice.si3.ihm.android.database.viewmodel.ImportanceViewModel;
 import polytechnice.si3.ihm.android.database.viewmodel.IssueViewModel;
+import polytechnice.si3.ihm.android.database.viewmodel.ProgressViewModel;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -28,14 +32,23 @@ public class SearchActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_search);
 
+        TextView importance = findViewById(R.id.importance);
+
+
         SearchView searchView = findViewById(R.id.searchView);
 
         GridView gridView = findViewById(R.id.searchResult);
         IssueViewModel issueViewModel = ViewModelProviders.of(this).get(IssueViewModel.class);
 
+        ProgressViewModel progressViewModel = ViewModelProviders.of(this).get(ProgressViewModel.class);
+        ImportanceViewModel importanceViewModel = ViewModelProviders.of(this).get(ImportanceViewModel.class);
+        CategoryViewModel categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
+
+
         User userConnected = new User(getIntent());
         issueAdapter = new IssueAdapterForSearch(
-                getBaseContext(), new ArrayList<>(), issueViewModel, userConnected);
+                getBaseContext(), new ArrayList<>(), issueViewModel, userConnected,
+                progressViewModel, importanceViewModel, categoryViewModel);
 
         LiveData<List<Issue>> liveIssues = issueViewModel.getAll();
 

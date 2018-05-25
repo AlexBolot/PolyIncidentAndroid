@@ -60,13 +60,13 @@ public class MainLoginActivity extends AppCompatActivity {
                 new Category("Autre"));
 
         importanceViewModel.insert(
-                new Importance("Faible"),
-                new Importance("Moyenne"),
-                new Importance("Forte"));
+                new Importance("Mineur"),
+                new Importance("Modéré"),
+                new Importance("Important"));
 
         progressViewModel.insert(
                 new Progress("À traiter"),
-                new Progress("En cours de traitement"),
+                new Progress("Résolu"),
                 new Progress("Traité"));
 
 
