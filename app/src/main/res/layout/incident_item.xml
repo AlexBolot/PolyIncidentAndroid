@@ -34,17 +34,14 @@
             <ImageView
                 android:id="@+id/loadingVideo"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="0dp"
-                android:layout_marginEnd="0dp"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="50dp"
                 android:adjustViewBounds="true"
-                android:contentDescription="@string/placeholder"
-                android:scaleType="fitEnd"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/showmore" />
+                android:alpha="0.6"
+                android:padding="30dp"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                app:srcCompat="@drawable/loading" />
 
             <ImageView
                 android:id="@+id/placeHolderPlay"

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -157,7 +158,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 }
                 //if this is a move, we do the translation
                 else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (canBeClic && (totalDx > 50 || totalDy > 10) || v.getX() > 100)
+                    if (canBeClic && (totalDx > 50 || totalDy > 1) || v.getX() > 100)
                         canBeClic = false;
                     float dx = event.getX() - xStart;
                     Log.d(TAG + "_swipeMenu", "Moved, swipe ?");
@@ -279,6 +280,8 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
                 ImageView placeholder = view.findViewById(R.id.loadingVideo);
                 placeholder.setVisibility(View.VISIBLE);
 
+                placeholder.startAnimation(AnimationUtils.loadAnimation(context, R.anim.infinite_rotate));
+
                 //region ========== VideoView ==========
                 videoPreview.setVideoPath(link);
                 MediaController mediaController = new MediaController(context);
@@ -307,6 +310,7 @@ public class IssueAdapter extends ArrayAdapter<Issue> {
 
                 videoPreview.setOnPreparedListener(mediaPlayer -> {
                     // hide the place holder
+                    placeholder.clearAnimation();
                     placeholder.setVisibility(View.GONE);
                     placeHolderPlay.setVisibility(View.VISIBLE);
                     mediaController.hide();
